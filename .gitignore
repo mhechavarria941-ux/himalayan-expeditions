@@ -1,0 +1,65 @@
+# Git ignore file for Himalayan Expeditions project
+
+# Credentials and secrets
+*.env
+.env
+.env.local
+passwords.txt
+secrets.json
+credentials.json
+
+# SQL Server specific
+*.mdf
+*.ldf
+*.ndf
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large files (batch SQL files can be regenerated)
+insert_*.sql
+create_*.sql
+*.tmp
+
+# Logs
+*.log
+logs/
+
+# Environment
+.venv/
+venv/
+env/
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# Temporary files
+*.bak
+*.backup
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Node (if needed)
+node_modules/
+package-lock.json
+
+# Workspace
+.DS_Store
+*.sublime-workspace
