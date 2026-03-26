@@ -32,6 +32,9 @@ insert_*.sql
 create_*.sql
 *.tmp
 
+# Archived directory (old test scripts and temporary files)
+archived/
+
 # Logs
 *.log
 logs/
