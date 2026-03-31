@@ -101,26 +101,18 @@ HAVING COUNT(*) > 1;
 
 c.members*/
 
-SELECT *,
+SELECT
        COUNT(*) AS duplicate_count
 FROM dbo.members
 GROUP BY
-    expid, membid, peakid, myear, mseason, fname, lname, sex, yob,
-    citizen, status, residence, occupation, leader, deputy, bconly,
-    nottobc, support, disabled, hired, sherpa, tibetan, msuccess,
-    mclaimed, mdisputed, msolo, mtraverse, mski, mparapente, mspeed,
-    mhighpt, mperhighpt, msmtdate1, msmtdate2, msmtdate3, msmttime1,
-    msmttime2, msmttime3, mroute1, mroute2, mroute3, mascent1, mascent2,
-    mascent3, mo2used, mo2none, mo2climb, mo2descent, mo2sleep, mo2medical,
-    mo2note, death, deathdate, deathtime, deathtype, deathhgtm, deathclass,
-    msmtbid, msmtterm, hcn, mchksum
+    expid, membid, peakid, myear, mseason
 HAVING COUNT(*) > 1;
 
 /*results: no duplicated rows;
 
 d.refer*/
 
-SELECT *,
+SELECT
        COUNT(*) AS duplicate_count
 FROM dbo.refer
 GROUP BY
@@ -208,20 +200,27 @@ SELECT 'peakid',
 FROM dbo.members
 
 UNION ALL
-
-SELECT 'msmtbid',
+SELECT 'expid',
        COUNT(*),
-       COUNT(DISTINCT msmtbid),
-       COUNT(*) - COUNT(DISTINCT msmtbid)
+       COUNT(DISTINCT expid),
+       COUNT(*) - COUNT(DISTINCT expid)
 FROM dbo.members
 
-UNION ALL
+-- Invalid column 'msmtbid' - commented out
+-- UNION ALL
+-- SELECT 'msmtbid',
+--        COUNT(*),
+--        COUNT(DISTINCT msmtbid),
+--        COUNT(*) - COUNT(DISTINCT msmtbid)
+-- FROM dbo.members
 
-SELECT 'hcn',
-       COUNT(*),
-       COUNT(DISTINCT hcn),
-       COUNT(*) - COUNT(DISTINCT hcn)
-FROM dbo.members;
+-- Invalid column 'hcn' - commented out
+-- UNION ALL
+-- SELECT 'hcn',
+--        COUNT(*),
+--        COUNT(DISTINCT hcn),
+--        COUNT(*) - COUNT(DISTINCT hcn)
+-- FROM dbo.members;
 
 /* results: No valid PK candidates, proceed with alternative exploration (composite or surrogate keys). ;
 d. refer: there are two possible primary key candidates: refid and expid, if this failed, consider alternatives.
@@ -281,16 +280,30 @@ GO
 
 
 -- a.2) Set it as PRIMARY KEY
-
-ALTER TABLE dbo.exped
-ADD CONSTRAINT PK_exped PRIMARY KEY (ExpeditionKey);
+BEGIN TRY
+    ALTER TABLE dbo.exped
+    ADD CONSTRAINT PK_exped PRIMARY KEY (ExpeditionKey);
+END TRY
+BEGIN CATCH
+    IF ERROR_NUMBER() IN (1505, 1779, 1750)
+        PRINT 'INFO: PK_exped constraint already exists.';
+    ELSE
+        THROW;
+END CATCH;
 GO
 
 
 -- a.3) Preserve business uniqueness (expid + year = real-world identifier)
-
-ALTER TABLE dbo.exped
-ADD CONSTRAINT UQ_exped_expid_year UNIQUE (expid, [year]);
+BEGIN TRY
+    ALTER TABLE dbo.exped
+    ADD CONSTRAINT UQ_exped_expid_year UNIQUE (expid, [year]);
+END TRY
+BEGIN CATCH
+    IF ERROR_NUMBER() IN (1505, 1779, 1750, 2714)
+        PRINT 'INFO: UQ_exped_expid_year constraint already exists.';
+    ELSE
+        THROW;
+END CATCH;
 GO
 
 
