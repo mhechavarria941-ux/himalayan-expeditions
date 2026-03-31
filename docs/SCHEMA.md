@@ -2,7 +2,37 @@
 
 ## Complete Database Schema for Himalayan Expeditions
 
+**Last Updated**: March 31, 2026
+
 This document provides comprehensive documentation of all tables, columns, and relationships in the normalized Himalayan Expeditions database.
+
+---
+
+## Schema Overview
+
+### Actual Column Structure (from CSV Import)
+
+**Important Note**: The original cleaning script contained references to columns that were not present in the source CSV files. This schema documents the **actual columns** imported from the data files.
+
+### members Table - Actual Columns Imported
+```
+expid, membid, peakid, myear, mseason, fname, lname, sex, yob, 
+citizen, status, residence, occupation, leader, deputy, bconly, 
+nottobc, support, disabled, hired, sherpa, tibetan, msuccess, 
+mclaimed, mdisputed, msolo, mtraverse, mski, mparapente, mspeed, 
+mhighpt, mperhighpt, msmtdate1, msmtdate2, msmtdate3, msmttime1, 
+msmttime2, msmttime3, mroute1, mroute2, mroute3, mascent1, mascent2, 
+mascent3, mo2used, mo2none, mo2climb, mroute1, mroute2, mroute3
+```
+
+**NOT Present in CSV** (referenced by original script but non-existent):
+- `msmtbid` - Summit batch ID
+- `hcn` - Himalayan climbing number  
+- `mchksum` - Member checksum
+- `deathclass` - Death classification
+- `msmtterm` - Summit term
+- `death`, `deathdate`, `deathtime`, `deathtype`, `deathhgtm` - Death fields
+- `mo2descent`, `mo2sleep`, `mo2medical`, `mo2note` - Extended oxygen fields
 
 ---
 

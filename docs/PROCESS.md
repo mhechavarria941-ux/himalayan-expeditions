@@ -447,6 +447,106 @@ SELECT name AS Table_Name
 FROM sys.tables 
 WHERE schema_id = SCHEMA_ID('dbo') 
 ORDER BY name;
+```
+
+---
+
+## Phase 9: Script Validation & Bug Fixes (March 31, 2026)
+
+### Problem Identified
+The `himalayan_expedition_cleaning.sql` script contained references to columns that don't exist in the actual database schema, causing validation errors when executed.
+
+### Root Cause Analysis
+The original cleaning script was designed for a different data structure. After CSV import, several referenced columns were absent from the members table:
+
+**Non-existent Columns Found:**
+- `msmtbid` - Summit batch ID (not in CSV)
+- `hcn` - Himalayan climbing number (not in CSV)
+- `deathclass` - Death classification (not in CSV)
+- `msmtterm` - Summit term (not in CSV)
+- `mo2descent`, `mo2sleep`, `mo2medical`, `mo2note` - Oxygen usage fields (not in CSV)
+- `death`, `deathdate`, `deathtime`, `deathtype`, `deathhgtm` - Death information (not in CSV)
+
+### Step 28: Column Reference Cleanup
+**Fixed Issues**:
+
+1. **Commented out non-existent column validation queries** (Lines 214-223)
+   ```sql
+   -- msmtbid diagnostic (non-existent column)
+   -- SELECT 'msmtbid', COUNT(*), COUNT(DISTINCT msmtbid), ...
+   
+   -- hcn diagnostic (non-existent column) 
+   -- SELECT 'hcn', COUNT(*), COUNT(DISTINCT hcn), ...
+   ```
+
+2. **Removed non-existent columns from GROUP BY clause** (Lines 103-116)
+   ```sql
+   -- BEFORE: 50+ columns including death, deathclass, hcn, msmtbid, etc.
+   -- AFTER: 5 core columns only (expid, membid, peakid, myear, mseason)
+   SELECT COUNT(*) AS duplicate_count
+   FROM dbo.members
+   GROUP BY expid, membid, peakid, myear, mseason
+   HAVING COUNT(*) > 1;
+   ```
+
+3. **Fixed SELECT * with GROUP BY aggregation error**
+   ```sql
+   -- BEFORE: SELECT *, COUNT(*) FROM refer GROUP BY ... [Invalid]
+   -- AFTER: SELECT COUNT(*) FROM refer GROUP BY ... [Valid]
+   ```
+
+### Step 29: Constraint Error Handling
+**Added TRY-CATCH blocks for idempotent constraint creation**:
+
+```sql
+-- Before: Direct ALTER TABLE (fails if constraint already exists)
+-- After: TRY-CATCH with error suppression
+
+BEGIN TRY
+    ALTER TABLE dbo.exped
+    ADD CONSTRAINT PK_exped PRIMARY KEY (ExpeditionKey);
+END TRY
+BEGIN CATCH
+    IF ERROR_NUMBER() IN (1505, 1779, 1750)
+        PRINT 'INFO: PK_exped constraint already exists.';
+    ELSE
+        THROW;
+END CATCH;
+```
+
+**Constraints Fixed**:
+- PK_exped (primary key on ExpeditionKey)
+- UQ_exped_expid_year (unique on business key)
+- PK_refer (primary key on ReferenceKey)
+- UQ_refer_refid_expid_ryear (unique on business key)
+
+### Step 30: Validation Results
+✅ **Script now executes cleanly without errors**
+
+```
+ExpeditionKey column already exists in exped
+ReferenceKey column already exists in refer
+MemberKey column already exists in members
+
+Validation Results:
+- total_members: 4
+- distinct_keys: 4
+- distinct_membids: 4
+
+Decomposition Tables:
+- member_person: 4 rows
+- member_participation: 4 rows
+- member_routes: 4 rows
+- member_summits: 2 rows
+
+✅ Member normalization tables created and data migration completed successfully.
+```
+
+### Takeaways
+1. **Schema Mismatch**: Original script assumed different column names/structure than actual CSV columns
+2. **Validation Queries**: Generic diagnostic queries require strict column name matching
+3. **Idempotent Operations**: TRY-CATCH blocks essential for scripts that may run multiple times
+4. **Documentation**: Original script lacked comments explaining column dependencies
 
 -- Result: 14 tables created
 -- - citizenship_lookup, exped, expedition_admin, expedition_camps

@@ -98,6 +98,31 @@ himalayan-expeditions/
 
 ## 📝 SQL Scripts
 
+### himalayan_expedition_cleaning.sql
+**Purpose**: Normalizes and validates data after import
+**Status**: ✅ FIXED (March 31, 2026)
+
+**Key Fixes Applied**:
+1. Removed references to non-existent columns:
+   - `msmtbid`, `hcn`, `mchksum` - Invalid member attributes
+   - `deathclass`, `msmtterm` - Non-existent member columns  
+   - `mo2descent`, `mo2sleep`, `mo2medical`, `mo2note` - Non-existent oxygen columns
+   - `death`, `deathdate`, `deathtime`, `deathtype`, `deathhgtm` - Non-existent death columns
+
+2. Added TRY-CATCH blocks for constraint creation:
+   - PK_exped, UQ_exped_expid_year, PK_refer, UQ_refer_refid_expid_ryear
+   - Handles idempotent execution (safe to run multiple times)
+
+3. Simplified validation queries to match actual schema
+   - Updated GROUP BY clauses with only valid columns
+   - Changed `SELECT *` queries to `SELECT COUNT(*)`
+
+**Operations**:
+- Adds surrogate keys (ExpeditionKey, MemberKey, ReferenceKey)
+- Establishes foreign key relationships
+- Validates data integrity
+- Populates lookup tables
+
 ### Main Scripts
 - `sql/himalayan_expedition_cleaning.sql` - Complete normalization script (includes all transformations)
 - `sql/load_sample_data.sql` - Small sample dataset for testing
