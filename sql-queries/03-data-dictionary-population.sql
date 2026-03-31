@@ -1,0 +1,77 @@
+﻿-- Data Dictionary Population Script
+-- Purpose: Populate himalayan_data_dictionary table with column descriptions
+-- Date: March 30, 2026
+-- This script documents all columns across all 13 tables
+
+-- Ensure table exists and is cleared
+IF OBJECT_ID('himalayan_data_dictionary', 'U') IS NOT NULL
+BEGIN
+    TRUNCATE TABLE himalayan_data_dictionary;
+END
+
+-- Insert data dictionary entries for core tables
+INSERT INTO himalayan_data_dictionary (Column1, Column2, Column3) VALUES
+('exped', 'ExpeditionKey', 'Unique auto-increment identifier for each expedition record'),
+('exped', 'expid', 'Expedition ID - unique alphanumeric identifier'),
+('exped', 'peakid', 'Peak ID - foreign key reference to peaks table'),
+('exped', 'year', 'Year of expedition'),
+('exped', 'season', 'Season of expedition (Spring, Autumn, Winter, Summer)'),
+('exped', 'host', 'Host country/nation organizing the expedition'),
+('exped', 'nation', 'Primary nation represented in the expedition'),
+('exped', 'leaders', 'Names of expedition leaders'),
+('exped', 'sponsor', 'Primary sponsor or funding organization'),
+('members', 'expid', 'Expedition ID - links to exped table'),
+('members', 'fname', 'Member first name'),
+('members', 'lname', 'Member last name'),
+('members', 'sex', 'Gender (M/F)'),
+('members', 'yob', 'Year of birth'),
+('members', 'citizen', 'Citizenship/nationality'),
+('members', 'status', 'Member status (Climber, Hired, Support)'),
+('members', 'msuccess', 'Member summit success (TRUE/FALSE)'),
+('members', 'death', 'Death flag during expedition'),
+('members', 'mo2used', 'Oxygen used indicator'),
+('peaks', 'peakid', 'Unique peak identifier'),
+('peaks', 'pkname', 'Primary peak name'),
+('peaks', 'heightm', 'Peak height in meters'),
+('peaks', 'heightf', 'Peak height in feet'),
+('peaks', 'location', 'Geographic location description'),
+('peaks', 'himal', 'Mountain range (Himalayan zone)'),
+('peaks', 'region', 'Geographic region'),
+('refer', 'expid', 'Expedition ID - links to exped table'),
+('refer', 'rauthor', 'Reference author'),
+('refer', 'rtitle', 'Reference title/book/article name'),
+('refer', 'rpublisher', 'Publisher name'),
+('refer', 'rpubdate', 'Publication date'),
+('refer', 'rcitation', 'Full citation format'),
+('refer', 'rtype', 'Reference type (book, article, journal)'),
+('expedition_oxygen', 'ExpeditionKey', 'Foreign key to exped table'),
+('expedition_oxygen', 'o2used', 'Oxygen used flag'),
+('expedition_oxygen', 'o2climb', 'Oxygen used during climb'),
+('expedition_oxygen', 'o2descent', 'Oxygen used during descent'),
+('expedition_style', 'ExpeditionKey', 'Foreign key to exped table'),
+('expedition_style', 'style', 'Expedition style/approach type'),
+('expedition_timeline', 'ExpeditionKey', 'Foreign key to exped table'),
+('expedition_timeline', 'startdate', 'Expedition start date'),
+('expedition_timeline', 'summitdate', 'Summit date (if successful)'),
+('expedition_timeline', 'enddate', 'Expedition end date'),
+('expedition_statistics', 'ExpeditionKey', 'Foreign key to exped table'),
+('expedition_statistics', 'totmembers', 'Total members in expedition'),
+('expedition_statistics', 'summited', 'Number of members who summited'),
+('expedition_statistics', 'deaths', 'Number of deaths during expedition'),
+('expedition_admin', 'ExpeditionKey', 'Foreign key to exped table'),
+('expedition_admin', 'permit_year', 'Permit year'),
+('expedition_admin', 'permit_number', 'Permit number'),
+('expedition_incidents', 'ExpeditionKey', 'Foreign key to exped table'),
+('expedition_incidents', 'incident_type', 'Type of incident (Avalanche, Altitude sickness, etc.)'),
+('expedition_incidents', 'incident_date', 'Date of incident'),
+('expedition_incidents', 'casualty_count', 'Number of casualties'),
+('expedition_camps', 'ExpeditionKey', 'Foreign key to exped table'),
+('expedition_camps', 'camp_number', 'Camp sequence number'),
+('expedition_camps', 'camp_altitude', 'Camp altitude in meters'),
+('citizenship_lookup', 'CitizenshipKey', 'Unique citizenship identifier'),
+('citizenship_lookup', 'citizenship_name', 'Country/citizenship name'),
+('season_lookup', 'SeasonKey', 'Unique season identifier'),
+('season_lookup', 'season_name', 'Season name (Spring, Autumn, Winter, Summer)'),
+('himalayan_data_dictionary', 'Column1', 'Table name'),
+('himalayan_data_dictionary', 'Column2', 'Column name'),
+('himalayan_data_dictionary', 'Column3', 'Column description');
