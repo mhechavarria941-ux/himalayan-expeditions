@@ -2,7 +2,7 @@
 
 $server = "cap2761cricardomolina.database.windows.net"
 $database = "Final_Project"
-$username = "admin_ct"  
+$username = "admin_ct"
 $password = "Demo123456"
 $project_path = "C:\Users\Ricar\OneDrive - Miami Dade College\CAP2761C Intermidiate Analitics\FINAL PROJECT"
 
