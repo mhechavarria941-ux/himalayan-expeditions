@@ -1,9 +1,16 @@
 param(
-    [string]$Server = "cap2761cricardomolina.database.windows.net",
+    [string]$Server = "",
     [string]$Database = "Final_Project",
-    [string]$Username = "admin_ct",
-    [string]$Password = "Demo123456"
+    [string]$Username = "",
+    [string]$Password = ""
 )
+
+# EXIT if credentials not provided
+if (-not $Server -or -not $Username -or -not $Password) {
+    Write-Host "ERROR: Missing credentials!" -ForegroundColor Red
+    Write-Host "Usage: powershell -File bulk_load_csv.ps1 -Server YOUR_SERVER.database.windows.net -Username YOUR_USERNAME -Password YOUR_PASSWORD"
+    exit 1
+}
 
 function Escape-SqlString {
     param([string]$value)

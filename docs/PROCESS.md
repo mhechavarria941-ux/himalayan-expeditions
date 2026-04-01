@@ -25,9 +25,9 @@ This document outlines all the steps taken to create, populate, and normalize th
 ### Step 3: Infrastructure Planning
 - **Decision**: Use Azure SQL Database for cloud-based solution
 - **Connection Details**: 
-  - Server: cap2761cricardomolina.database.windows.net
+  - Server: YOUR_SERVER.database.windows.net (e.g., myserver.database.windows.net)
   - Database: Final_Project
-  - Authentication: SQL Server auth (username: admin_ct)
+  - Authentication: SQL Server auth (provide your username and password)
 
 ---
 
@@ -158,15 +158,15 @@ for encoding in encodings:
 **Created**: execute_batches.ps1 PowerShell script
 
 ```powershell
-$serverName = "cap2761cricardomolina.database.windows.net"
-$databaseName = "Final_Project"
-$username = "admin_ct"
-$password = "Demo123456"
+$serverName = \"YOUR_SERVER.database.windows.net\"
+$databaseName = \"Final_Project\"
+$username = \"YOUR_USERNAME\"
+$password = \"YOUR_PASSWORD\"
 
-$batchFiles = Get-ChildItem -Path "." -Filter "insert_*.sql" | Sort-Object
+$batchFiles = Get-ChildItem -Path \".\" -Filter \"insert_*.sql\" | Sort-Object
 
 foreach ($file in $batchFiles) {
-    Write-Host "Executing: $($file.Name)"
+    Write-Host \"Executing: $($file.Name)\"
     sqlcmd -S $serverName -d $databaseName -U $username -P $password `
            -i $file.FullName -t 60
     

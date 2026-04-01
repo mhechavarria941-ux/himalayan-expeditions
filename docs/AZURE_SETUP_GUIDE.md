@@ -8,7 +8,7 @@
 
 This project is built to run on **Microsoft Azure SQL Database** (cloud-based SQL Server).
 
-**Database Location:** `cap2761cricardomolina.database.windows.net`  
+**Database Location:** `YOUR_SERVER.database.windows.net`  
 **Database Name:** `Final_Project`  
 **Authentication:** SQL Server Authentication
 
@@ -19,10 +19,10 @@ This project is built to run on **Microsoft Azure SQL Database** (cloud-based SQ
 Before running this project, you need:
 
 ### 1. Azure SQL Database Connection
-- **Server:** `cap2761cricardomolina.database.windows.net`
+- **Server:** `YOUR_SERVER.database.windows.net` (e.g., `myserver.database.windows.net`)
 - **Database:** `Final_Project`
-- **Username:** `admin_ct`
-- **Password:** `Demo123456`
+- **Username:** `YOUR_USERNAME` (your Azure SQL admin username)
+- **Password:** `YOUR_PASSWORD` (your Azure SQL admin password)
 - **Port:** 1433 (default)
 
 ### 2. Required Software
@@ -49,10 +49,10 @@ data/himalayan_sources/
 
 ### **STEP 1: Verify Azure Connection**
 ```powershell
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
+sqlcmd -S "YOUR_SERVER.database.windows.net" `
         -d "Final_Project" `
-        -U "admin_ct" `
-        -P "Demo123456" `
+        -U "YOUR_USERNAME" `
+        -P "YOUR_PASSWORD" `
         -Q "SELECT @@VERSION"
 ```
 ✅ If connection succeeds, you'll see SQL Server version info
@@ -70,10 +70,10 @@ Creates all base tables with proper column definitions:
 
 **Run in Azure:**
 ```powershell
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
+sqlcmd -S "YOUR_SERVER.database.windows.net" `
         -d "Final_Project" `
-        -U "admin_ct" `
-        -P "Demo123456" `
+        -U "YOUR_USERNAME" `
+        -P "YOUR_PASSWORD" `
         -i "sql\schema_for_chartdb.sql"
 ```
 
@@ -147,10 +147,10 @@ Creates normalized/decomposition tables:
 
 **Run in Azure:**
 ```powershell
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
+sqlcmd -S "YOUR_SERVER.database.windows.net" `
         -d "Final_Project" `
-        -U "admin_ct" `
-        -P "Demo123456" `
+        -U "YOUR_USERNAME" `
+        -P "YOUR_PASSWORD" `
         -i "sql\himalayan_expedition_cleaning.sql"
 ```
 
@@ -182,10 +182,10 @@ Extracts and normalizes member data into 4 decomposition tables:
 
 **Run in Azure:**
 ```powershell
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
+sqlcmd -S "YOUR_SERVER.database.windows.net" `
         -d "Final_Project" `
-        -U "admin_ct" `
-        -P "Demo123456" `
+        -U "YOUR_USERNAME" `
+        -P "YOUR_PASSWORD" `
         -i "sql\populate_decomposition_tables.sql"
 ```
 
@@ -219,10 +219,10 @@ member_summits : 267000 rows
 After all steps, verify the complete database structure:
 
 ```powershell
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
+sqlcmd -S "YOUR_SERVER.database.windows.net" `
         -d "Final_Project" `
-        -U "admin_ct" `
-        -P "Demo123456" `
+        -U "YOUR_USERNAME" `
+        -P "YOUR_PASSWORD" `
         -Q "SELECT 'peaks' AS [Table], COUNT(*) FROM dbo.peaks 
             UNION ALL SELECT 'exped', COUNT(*) FROM dbo.exped 
             UNION ALL SELECT 'members', COUNT(*) FROM dbo.members 
@@ -266,7 +266,7 @@ refer                     15,586
 ## 🔧 Troubleshooting
 
 ### Connection Failed
-**Error:** `Login failed for user 'admin_ct'`
+**Error:** `Login failed for user 'YOUR_USERNAME'`
 - Verify credentials are correct
 - Check internet connection to Azure
 - Ensure firewall allows port 1433
@@ -315,7 +315,7 @@ refer                     15,586
 ┌─────────────────────────────────────┐
 │   Microsoft Azure (Cloud)           │
 │  ├─ SQL Database Server             │
-│  │  cap2761cricardomolina.database  │
+│  │  YOUR_SERVER.database  │
 │  │  .windows.net                    │
 │  │                                  │
 │  └─ Database: Final_Project         │
@@ -391,17 +391,17 @@ Run each command in sequence:
 
 ```powershell
 # Step 2: Create Schema
-sqlcmd -S "cap2761cricardomolina.database.windows.net" -d "Final_Project" -U "admin_ct" -P "Demo123456" -i "sql\schema_for_chartdb.sql"
+sqlcmd -S "YOUR_SERVER.database.windows.net" -d "Final_Project" -U "YOUR_USERNAME" -P "YOUR_PASSWORD" -i "sql\schema_for_chartdb.sql"
 
 # Step 3: Load Data (from project root)
 cd "path\to\himalayan-expeditions"
 powershell -ExecutionPolicy Bypass -File "scripts\bulk_load_csv.ps1"
 
 # Step 4: Normalize
-sqlcmd -S "cap2761cricardomolina.database.windows.net" -d "Final_Project" -U "admin_ct" -P "Demo123456" -i "sql\himalayan_expedition_cleaning.sql"
+sqlcmd -S "YOUR_SERVER.database.windows.net" -d "Final_Project" -U "YOUR_USERNAME" -P "YOUR_PASSWORD" -i "sql\himalayan_expedition_cleaning.sql"
 
 # Step 5: Populate Decomposition Tables
-sqlcmd -S "cap2761cricardomolina.database.windows.net" -d "Final_Project" -U "admin_ct" -P "Demo123456" -i "sql\populate_decomposition_tables.sql"
+sqlcmd -S "YOUR_SERVER.database.windows.net" -d "Final_Project" -U "YOUR_USERNAME" -P "YOUR_PASSWORD" -i "sql\populate_decomposition_tables.sql"
 ```
 
 ---

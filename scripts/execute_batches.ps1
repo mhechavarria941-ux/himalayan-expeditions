@@ -1,9 +1,9 @@
 # Execute batched SQL files to import CSV data
 
-$server = "cap2761cricardomolina.database.windows.net"
+$server = ""
 $database = "Final_Project"
-$username = "admin_ct"
-$password = "Demo123456"
+$username = ""
+$password = ""
 $project_path = "C:\Users\Ricar\OneDrive - Miami Dade College\CAP2761C Intermidiate Analitics\FINAL PROJECT"
 
 Write-Host "Starting batched SQL import..."

@@ -67,10 +67,10 @@ LOOKUP TABLES:
 STEP 1: VERIFY AZURE CONNECTION (Manual)
 ────────────────────────────────────────
 Command:
-  sqlcmd -S "cap2761cricardomolina.database.windows.net" \
+  sqlcmd -S "YOUR_SERVER.database.windows.net" \
           -d "Final_Project" \
-          -U "admin_ct" \
-          -P "Demo123456" \
+          -U "YOUR_USERNAME" \
+          -P "YOUR_PASSWORD" \
           -Q "SELECT @@VERSION"
 
 Expected: SQL Server version information
@@ -226,15 +226,15 @@ Status: ✅ Tested and verified (all tables populated)
 
 CLOUD PROVIDER: Microsoft Azure
 DATABASE TYPE: SQL Server
-SERVER: cap2761cricardomolina.database.windows.net
+SERVER: YOUR_SERVER.database.windows.net
 DATABASE: Final_Project
 AUTHENTICATION: SQL Server (username/password)
 
 CONNECTION STRING:
-  Server=cap2761cricardomolina.database.windows.net;
+  Server=YOUR_SERVER.database.windows.net;
   Database=Final_Project;
-  User Id=admin_ct;
-  Password=Demo123456;
+  User Id=YOUR_USERNAME;
+  Password=(your password);
   Encrypt=true;
   Connection Timeout=30;
 
@@ -247,7 +247,7 @@ NETWORK TOPOLOGY:
                    ↓
   ┌─────────────────────────────────────────────────┐
   │ Microsoft Azure Cloud                           │
-  │ ├─ SQL Database Server (cap2761cricardomolina)  │
+  │ ├─ SQL Database Server (YOUR_SERVER)  │
   │ │  └─ Final_Project database                    │
   │ │     ├─ Base tables (4)                        │
   │ │     ├─ Decomposition tables (14)              │
@@ -346,10 +346,10 @@ FOR INSTRUCTORS:
 ═════════════════════════════════════════════════════════════════════════
 
 # Step 2: Create Schema (1-2 minutes)
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
+sqlcmd -S "YOUR_SERVER.database.windows.net" `
         -d "Final_Project" `
-        -U "admin_ct" `
-        -P "Demo123456" `
+        -U "YOUR_USERNAME" `
+        -P "YOUR_PASSWORD" `
         -i "sql\schema_for_chartdb.sql"
 
 # Step 3: Load CSV Data (10-15 minutes)
@@ -357,24 +357,24 @@ cd "path\to\himalayan-expeditions"
 powershell -ExecutionPolicy Bypass -File "scripts\bulk_load_csv.ps1"
 
 # Step 4: Normalize Database (5-10 minutes)
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
+sqlcmd -S "YOUR_SERVER.database.windows.net" `
         -d "Final_Project" `
-        -U "admin_ct" `
-        -P "Demo123456" `
+        -U "YOUR_USERNAME" `
+        -P "YOUR_PASSWORD" `
         -i "sql\himalayan_expedition_cleaning.sql"
 
 # Step 5: Populate Decomposition Tables (5-10 minutes)
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
+sqlcmd -S "YOUR_SERVER.database.windows.net" `
         -d "Final_Project" `
-        -U "admin_ct" `
-        -P "Demo123456" `
+        -U "YOUR_USERNAME" `
+        -P "YOUR_PASSWORD" `
         -i "sql\populate_decomposition_tables.sql"
 
 # Verification Query (all steps done)
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
+sqlcmd -S "YOUR_SERVER.database.windows.net" `
         -d "Final_Project" `
-        -U "admin_ct" `
-        -P "Demo123456" `
+        -U "YOUR_USERNAME" `
+        -P "YOUR_PASSWORD" `
         -Q "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='dbo' ORDER BY TABLE_NAME"
 
 
@@ -527,7 +527,7 @@ Next Steps:
 
 Report Generated: March 31, 2026
 Repository: https://github.com/rjmolinag0213r/himalayan-expeditions
-Database: cap2761cricardomolina.database.windows.net / Final_Project
+Database: YOUR_SERVER.database.windows.net / Final_Project
 
 STATUS: ✅ ALL SYSTEMS GO
 ═════════════════════════════════════════════════════════════════════════

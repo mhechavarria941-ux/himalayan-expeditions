@@ -34,7 +34,7 @@ For detailed step-by-step instructions with exact commands and expected outputs,
 ### Database Platform
 - **Cloud Provider:** Microsoft Azure
 - **Database Type:** SQL Server
-- **Server:** `cap2761cricardomolina.database.windows.net`
+- **Server:** `YOUR_SERVER.database.windows.net` 🔐 See AZURE_SETUP_GUIDE.md for connection details
 - **Authentication:** SQL Server (username/password)
 
 ### Final Schema
