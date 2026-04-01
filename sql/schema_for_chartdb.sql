@@ -133,8 +133,7 @@ CREATE TABLE dbo.exped (
     primmem NVARCHAR(255) NULL,
     primref NVARCHAR(255) NULL,
     primid NVARCHAR(255) NULL,
-    chksum NVARCHAR(255) NULL,
-    UNIQUE(expid)
+    chksum NVARCHAR(255) NULL
 );
 GO
 
