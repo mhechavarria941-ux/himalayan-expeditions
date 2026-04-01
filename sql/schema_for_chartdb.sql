@@ -5,6 +5,35 @@
 -- Updated: March 30, 2026
 -- ================================
 
+-- Drop foreign key constraints first
+BEGIN TRY
+    DECLARE @sql NVARCHAR(MAX) = '';
+    SELECT @sql += 'ALTER TABLE ' + QUOTENAME(t.name) + ' DROP CONSTRAINT ' + QUOTENAME(fk.name) + '; '
+    FROM sys.foreign_keys AS fk
+    INNER JOIN sys.tables AS t ON fk.parent_object_id = t.object_id
+    WHERE fk.referenced_object_id IN (
+        SELECT object_id FROM sys.tables WHERE name IN ('peaks', 'exped', 'members', 'refer')
+    );
+    
+    IF @sql <> ''
+    BEGIN
+        EXEC sp_executesql @sql;
+    END;
+END TRY
+BEGIN CATCH
+    PRINT 'No foreign keys to drop.';
+END CATCH;
+
+-- Drop existing tables if they exist to ensure clean schema
+-- Drop in dependency order (dependent tables first)
+DROP TABLE IF EXISTS dbo.himalayan_data_dictionary;
+DROP TABLE IF EXISTS dbo.audit_deleted_references;
+DROP TABLE IF EXISTS dbo.refer;
+DROP TABLE IF EXISTS dbo.members;
+DROP TABLE IF EXISTS dbo.exped;
+DROP TABLE IF EXISTS dbo.peaks;
+GO
+
 -- =========================================================
 -- PEAKS TABLE (23 columns from peaks.csv)
 -- =========================================================
