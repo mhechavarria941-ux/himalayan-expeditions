@@ -14,21 +14,20 @@ AS
     -- This view integrates member-level data with expedition context for analysis
     SELECT 
         -- MEMBER IDENTIFIERS
-        m.memberid AS MemberId,
-        m.experid AS ExperienceId,
+        m.membid AS MemberId,
         m.expid AS ExpeditionId,
         CONCAT(m.fname, ' ', m.lname) AS 'Climber Name',
         
         -- MEMBER DEMOGRAPHICS
         m.citizen AS Citizenship,
-        YEAR(GETDATE()) - m.yob AS Age,
+        YEAR(GETDATE()) - CAST(m.yob AS INT) AS Age,
         m.sex AS Gender,
         
         -- MEMBER CLASSIFICATION
         CASE 
-            WHEN m.sherpa = 'T' THEN 'Sherpa'
-            WHEN m.tibetan = 'T' THEN 'Tibetan'
-            WHEN m.hired = 'T' THEN 'Hired Guide'
+            WHEN m.sherpa = 'TRUE' THEN 'Sherpa'
+            WHEN m.tibetan = 'TRUE' THEN 'Tibetan'
+            WHEN m.hired = 'TRUE' THEN 'Hired Guide'
             ELSE 'Paying Climber'
         END AS ParticipantType,
         
@@ -36,7 +35,7 @@ AS
         m.msuccess AS MemberSummitAchieved,
         m.death AS Died,
         m.deathtype AS CauseOfDeath,
-        CAST(CASE WHEN m.death = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END AS FLOAT) * 100 AS MortalityFlag,
+        CAST(CASE WHEN m.death = 'TRUE' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END AS FLOAT) * 100 AS MortalityFlag,
         
         -- OXYGEN USAGE
         m.mo2used AS MemberUsedOxygen,
@@ -44,14 +43,14 @@ AS
         -- EXPEDITION CONTEXT
         e.year AS ExpeditionYear,
         e.season AS Season,
-        e.totmembers AS TotalExpeditionMembers,
-        e.smtmembers AS ExpeditionSummits,
-        e.mdeaths AS ExpeditionDeaths,
-        e.tothired AS TotalHiredStaff,
+        CAST(e.totmembers AS INT) AS TotalExpeditionMembers,
+        CAST(e.smtmembers AS INT) AS ExpeditionSummits,
+        CAST(e.mdeaths AS INT) AS ExpeditionDeaths,
+        CAST(e.tothired AS INT) AS TotalHiredStaff,
         
         -- EXPEDITION OUTCOMES
-        e.success1 AS FirstRoute_Summits,
-        e.success2 AS SecondRoute_Summits,
+        e.success1 AS FirstRoute_Success,
+        e.success2 AS SecondRoute_Success,
         e.o2used AS ExpeditionUsedOxygen,
         e.traverse AS ExpeditionTraverse,
         e.ski AS ExpeditionSki,
@@ -64,17 +63,17 @@ AS
         
         -- CALCULATED METRICS
         CAST(CASE WHEN CAST(e.success1 AS INT) > CAST(0 AS INT) THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END AS FLOAT) / 
-            NULLIF(e.totmembers, 0) * 100 AS ExpeditionSuccessRate_Percent,
+            NULLIF(CAST(e.totmembers AS FLOAT), 0) * 100 AS ExpeditionSuccessRate_Percent,
         
-        CAST(CAST(e.mdeaths AS FLOAT) / NULLIF(e.totmembers, 0) * 100) AS ExpeditionMortalityRate_Percent,
+        CAST(CAST(e.mdeaths AS FLOAT) / NULLIF(CAST(e.totmembers AS FLOAT), 0) * 100 AS FLOAT) AS ExpeditionMortalityRate_Percent,
         
-        CAST(CAST(e.tothired AS FLOAT) / NULLIF(e.totmembers, 0) * 100) AS HiredStaffRatio_Percent,
+        CAST(CAST(e.tothired AS FLOAT) / NULLIF(CAST(e.totmembers AS FLOAT), 0) * 100 AS FLOAT) AS HiredStaffRatio_Percent,
         
         -- RISK ASSESSMENT
         CASE 
-            WHEN CAST(CAST(e.mdeaths AS FLOAT) / NULLIF(COUNT(*) OVER (PARTITION BY e.expid), 0)) >= CAST(0.2 AS FLOAT)
+            WHEN CAST(CAST(e.mdeaths AS FLOAT) / NULLIF(CAST(COUNT(*) OVER (PARTITION BY e.expid) AS FLOAT), 0) AS FLOAT) >= CAST(0.2 AS FLOAT)
                 THEN 'High Risk'
-            WHEN CAST(CAST(e.mdeaths AS FLOAT) / NULLIF(COUNT(*) OVER (PARTITION BY e.expid), 0)) >= CAST(0.05 AS FLOAT)
+            WHEN CAST(CAST(e.mdeaths AS FLOAT) / NULLIF(CAST(COUNT(*) OVER (PARTITION BY e.expid) AS FLOAT), 0) AS FLOAT) >= CAST(0.05 AS FLOAT)
                 THEN 'Moderate Risk'
             ELSE 'Lower Risk'
         END AS ExpeditionRiskLevel,
@@ -83,10 +82,10 @@ AS
         CAST(e.year AS NVARCHAR(4)) + ' ' + e.season AS ExpeditionPhase,
         
         CASE 
-            WHEN e.year < 1970 THEN 'Pre-1970 (Early Era)'
-            WHEN e.year BETWEEN 1970 AND 1989 THEN '1970-1989 (Growth Era)'
-            WHEN e.year BETWEEN 1990 AND 2009 THEN '1990-2009 (Expansion Era)'
-            WHEN e.year >= 2010 THEN '2010+ (Modern Era)'
+            WHEN CAST(e.year AS INT) < 1970 THEN 'Pre-1970 (Early Era)'
+            WHEN CAST(e.year AS INT) BETWEEN 1970 AND 1989 THEN '1970-1989 (Growth Era)'
+            WHEN CAST(e.year AS INT) BETWEEN 1990 AND 2009 THEN '1990-2009 (Expansion Era)'
+            WHEN CAST(e.year AS INT) >= 2010 THEN '2010+ (Modern Era)'
         END AS EraClassification
 
     FROM members m
@@ -108,17 +107,17 @@ AS
         p.pstatus AS PeakStatus,
         
         COUNT(DISTINCT e.expid) AS TotalExpeditions,
-        SUM(e.totmembers) AS TotalParticipants,
-        SUM(e.smtmembers) AS TotalSuccessfulSummits,
-        SUM(e.mdeaths) AS TotalDeaths,
+        SUM(CAST(e.totmembers AS INT)) AS TotalParticipants,
+        SUM(CAST(e.smtmembers AS INT)) AS TotalSuccessfulSummits,
+        SUM(CAST(e.mdeaths AS INT)) AS TotalDeaths,
         
         -- Calculate rates
-        CAST(SUM(CAST(e.smtmembers AS FLOAT)) / NULLIF(SUM(e.totmembers), 0) * 100) AS SummitSuccessRate_Percent,
-        CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(SUM(e.totmembers), 0) * 100) AS MortalityRate_Percent,
-        CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(COUNT(DISTINCT e.expid), 0)) AS DeathsPerExpedition,
+        CAST(SUM(CAST(e.smtmembers AS FLOAT)) / NULLIF(SUM(CAST(e.totmembers AS FLOAT)), 0) * 100 AS FLOAT) AS SummitSuccessRate_Percent,
+        CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(SUM(CAST(e.totmembers AS FLOAT)), 0) * 100 AS FLOAT) AS MortalityRate_Percent,
+        CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(CAST(COUNT(DISTINCT e.expid) AS FLOAT), 0) AS FLOAT) AS DeathsPerExpedition,
         
         -- Commercialization metric
-        CAST(SUM(CAST(e.tothired AS FLOAT)) / NULLIF(SUM(e.totmembers), 0) * 100) AS HiredStaffPercentage,
+        CAST(SUM(CAST(e.tothired AS FLOAT)) / NULLIF(SUM(CAST(e.totmembers AS FLOAT)), 0) * 100 AS FLOAT) AS HiredStaffPercentage,
         
         -- Historical span
         MIN(e.year) AS FirstExpeditionYear,
@@ -126,17 +125,17 @@ AS
         COUNT(DISTINCT e.year) AS YearsActive,
         
         -- Member composition
-        SUM(CASE WHEN m.sherpa = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS SherpaCount,
-        SUM(CASE WHEN m.hired = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS HiredGuideCount,
+        SUM(CASE WHEN m.sherpa = 'TRUE' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS SherpaCount,
+        SUM(CASE WHEN m.hired = 'TRUE' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS HiredGuideCount,
         COUNT(DISTINCT m.citizen) AS UniqNationalitiesAttempted,
         
         -- Risk classification
         CASE 
-            WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(COUNT(DISTINCT e.expid), 0)) >= CAST(0.3 AS FLOAT)
+            WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(CAST(COUNT(DISTINCT e.expid) AS FLOAT), 0) AS FLOAT) >= CAST(0.3 AS FLOAT)
                 THEN 'EXTREMELY DANGEROUS'
-            WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(COUNT(DISTINCT e.expid), 0)) >= CAST(0.15 AS FLOAT)
+            WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(CAST(COUNT(DISTINCT e.expid) AS FLOAT), 0) AS FLOAT) >= CAST(0.15 AS FLOAT)
                 THEN 'VERY DANGEROUS'
-            WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(COUNT(DISTINCT e.expid), 0)) >= CAST(0.05 AS FLOAT)
+            WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(CAST(COUNT(DISTINCT e.expid) AS FLOAT), 0) AS FLOAT) >= CAST(0.05 AS FLOAT)
                 THEN 'DANGEROUS'
             ELSE 'MODERATE'
         END AS DangerClassification

@@ -69,7 +69,7 @@ BEGIN
             p.pkname AS 'Peak Name',
             p.heightm AS 'Height (m)',
             COUNT(DISTINCT e.expid) AS 'Expeditions',
-            SUM(e.mdeaths) AS 'Deaths',
+            SUM(CAST(e.mdeaths AS INT)) AS 'Deaths',
             CAST(SUM(CAST(e.mdeaths AS FLOAT)) AS FLOAT) / COUNT(DISTINCT e.expid) AS 'Death Rate',
             CAST(SUM(CASE WHEN CAST(e.success1 AS INT) > CAST(0 AS INT) THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS FLOAT) 
                 / COUNT(DISTINCT e.expid) * 100 AS 'Success Rate (%)',
