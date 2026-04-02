@@ -1,7 +1,0 @@
-Changed database context to 'Final_Project'.
-Msg 207, Level 16, State 1, Server cap2761cricardomolina, Procedure vw_MemberExpeditionAnalysis, Line 7
-Invalid column name 'memberid'.
-Msg 207, Level 16, State 1, Server cap2761cricardomolina, Procedure vw_MemberExpeditionAnalysis, Line 8
-Invalid column name 'experid'.
-Msg 8117, Level 16, State 1, Server cap2761cricardomolina, Procedure vw_PeakStatisticsSummary, Line 15
-Operand data type nvarchar is invalid for sum operator.

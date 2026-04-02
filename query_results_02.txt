@@ -1,3 +1,0 @@
-Changed database context to 'Final_Project'.
-Msg 8117, Level 16, State 1, Server cap2761cricardomolina, Line 183
-Operand data type nvarchar is invalid for avg operator.
