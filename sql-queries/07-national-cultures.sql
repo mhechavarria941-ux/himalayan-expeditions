@@ -37,14 +37,14 @@ SELECT TOP 25
     
     COUNT(*) AS 'Total Participants',
     
-    SUM(CASE WHEN m.msuccess = 'T' THEN 1 ELSE 0 END) AS 'Summits Achieved',
+    SUM(CASE WHEN m.msuccess = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS 'Summits Achieved',
     
-    CAST(SUM(CASE WHEN m.msuccess = 'T' THEN 1 ELSE 0 END) AS FLOAT) 
+    CAST(SUM(CASE WHEN m.msuccess = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS FLOAT) 
         / COUNT(*) * 100 AS 'Summit Success Rate (%)',
     
-    SUM(CASE WHEN m.death = 'T' THEN 1 ELSE 0 END) AS 'Deaths',
+    SUM(CASE WHEN m.death = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS 'Deaths',
     
-    CAST(SUM(CASE WHEN m.death = 'T' THEN 1 ELSE 0 END) AS FLOAT) 
+    CAST(SUM(CASE WHEN m.death = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS FLOAT) 
         / COUNT(*) * 100 AS 'Mortality Rate (%)',
     
     COUNT(DISTINCT m.expid) AS 'Expeditions Joined',
@@ -55,7 +55,7 @@ SELECT TOP 25
 FROM members m
 WHERE m.citizen IS NOT NULL
 GROUP BY m.citizen
-HAVING COUNT(*) >= 100 -- Filter: nations with 100+ climbers for significance
+HAVING COUNT(*) >= CAST(100 AS INT) -- Filter: nations with 100+ climbers for significance
 ORDER BY 'Summit Success Rate (%)' DESC;
 
 -- ─────────────────────────────────────────────────────────────────────────────
@@ -87,19 +87,19 @@ SELECT TOP 20
     COUNT(DISTINCT e.expid) AS 'Expeditions Led',
     
     -- Oxygen usage pattern
-    CAST(SUM(CASE WHEN e.o2used = 'T' THEN 1 ELSE 0 END) AS FLOAT) 
+    CAST(SUM(CASE WHEN e.o2used = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS FLOAT) 
         / COUNT(DISTINCT e.expid) * 100 AS 'Oxygen Use Rate (%)',
     
     -- Traversing (crossing multiple peaks)
-    CAST(SUM(CASE WHEN e.traverse = 'T' THEN 1 ELSE 0 END) AS FLOAT) 
+    CAST(SUM(CASE WHEN e.traverse = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS FLOAT) 
         / COUNT(DISTINCT e.expid) * 100 AS 'Traverse Rate (%)',
     
     -- Skiing expeditions (descent by ski)
-    CAST(SUM(CASE WHEN e.ski = 'T' THEN 1 ELSE 0 END) AS FLOAT) 
+    CAST(SUM(CASE WHEN e.ski = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS FLOAT) 
         / COUNT(DISTINCT e.expid) * 100 AS 'Ski Descent Rate (%)',
     
     -- Success outcomes
-    CAST(SUM(CASE WHEN e.success1 > 0 THEN 1 ELSE 0 END) AS FLOAT) 
+    CAST(SUM(CASE WHEN CAST(e.success1 AS INT) > CAST(0 AS INT) THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS FLOAT) 
         / COUNT(DISTINCT e.expid) * 100 AS 'Success Rate (%)',
     
     -- Risk assessment
@@ -112,7 +112,7 @@ SELECT TOP 20
 FROM exped e
 WHERE e.nation IS NOT NULL
 GROUP BY e.nation
-HAVING COUNT(DISTINCT e.expid) >= 20 -- Filter: nations with 20+ expeditions
+HAVING COUNT(DISTINCT e.expid) >= CAST(20 AS INT) -- Filter: nations with 20+ expeditions
 ORDER BY COUNT(DISTINCT e.expid) DESC;
 
 -- ─────────────────────────────────────────────────────────────────────────────
@@ -144,7 +144,7 @@ SELECT
     p.pkname AS 'Peak',
     COUNT(DISTINCT e.expid) AS 'Expeditions',
     
-    CAST(SUM(CASE WHEN e.success1 > 0 THEN 1 ELSE 0 END) AS FLOAT) 
+    CAST(SUM(CASE WHEN CAST(e.success1 AS INT) > CAST(0 AS INT) THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS FLOAT) 
         / COUNT(DISTINCT e.expid) * 100 AS 'Success Rate (%)',
     
     SUM(e.smtmembers) AS 'Total Summits',
@@ -159,9 +159,9 @@ SELECT
 FROM exped e
     INNER JOIN peaks p ON e.peakid = p.peakid
 WHERE e.nation IS NOT NULL
-    AND p.heightm > 7000 -- Filter: focus on high altitude peaks (major achievements)
+    AND p.heightm > CAST(7000 AS INT) -- Filter: focus on high altitude peaks (major achievements)
 GROUP BY e.nation, p.pkname
-HAVING COUNT(DISTINCT e.expid) >= 3 -- Filter: meaningful participation (3+ expeditions)
+HAVING COUNT(DISTINCT e.expid) >= CAST(3 AS INT) -- Filter: meaningful participation (3+ expeditions)
 ORDER BY e.nation, 'Peak Rank for Nation';
 
 -- ─────────────────────────────────────────────────────────────────────────────
@@ -190,23 +190,23 @@ ORDER BY e.nation, 'Peak Rank for Nation';
 -- Subquery: categorize climbers by prior summit experience
 SELECT
     CASE 
-        WHEN ExperienceCount.PriorSummits = 0 THEN 'First Timer'
+        WHEN ExperienceCount.PriorSummits = CAST(0 AS INT) THEN 'First Timer'
         WHEN ExperienceCount.PriorSummits BETWEEN 1 AND 2 THEN '1-2 Prior Summits'
         WHEN ExperienceCount.PriorSummits BETWEEN 3 AND 5 THEN '3-5 Prior Summits'
-        WHEN ExperienceCount.PriorSummits > 5 THEN '5+ Prior Summits (Veteran)'
+        WHEN ExperienceCount.PriorSummits > CAST(5 AS INT) THEN '5+ Prior Summits (Veteran)'
     END AS 'Experience Level',
     
     COUNT(*) AS 'Total Participants',
     
-    SUM(CASE WHEN m.msuccess = 'T' THEN 1 ELSE 0 END) AS 'Summits Achieved',
+    SUM(CASE WHEN m.msuccess = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS 'Summits Achieved',
     
-    CAST(SUM(CASE WHEN m.msuccess = 'T' THEN 1 ELSE 0 END) AS FLOAT) 
-        / COUNT(*) * 100 AS 'Success Rate (%)',
+    CAST(SUM(CASE WHEN m.msuccess = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS FLOAT) 
+        / NULLIF(COUNT(*), 0) * 100 AS 'Success Rate (%)',
     
-    SUM(CASE WHEN m.death = 'T' THEN 1 ELSE 0 END) AS 'Deaths',
+    SUM(CASE WHEN m.death = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS 'Deaths',
     
-    CAST(SUM(CASE WHEN m.death = 'T' THEN 1 ELSE 0 END) AS FLOAT) 
-        / COUNT(*) * 100 AS 'Mortality Rate (%)',
+    CAST(SUM(CASE WHEN m.death = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS FLOAT) 
+        / NULLIF(COUNT(*), 0) * 100 AS 'Mortality Rate (%)',
     
     CAST(AVG(CAST(ExperienceCount.PriorSummits AS FLOAT)) AS DECIMAL(10,2)) AS 'Avg Prior Summits'
 
@@ -224,17 +224,17 @@ FROM members m
 
 GROUP BY 
     CASE 
-        WHEN ExperienceCount.PriorSummits = 0 THEN 'First Timer'
+        WHEN ExperienceCount.PriorSummits = CAST(0 AS INT) THEN 'First Timer'
         WHEN ExperienceCount.PriorSummits BETWEEN 1 AND 2 THEN '1-2 Prior Summits'
         WHEN ExperienceCount.PriorSummits BETWEEN 3 AND 5 THEN '3-5 Prior Summits'
-        WHEN ExperienceCount.PriorSummits > 5 THEN '5+ Prior Summits (Veteran)'
+        WHEN ExperienceCount.PriorSummits > CAST(5 AS INT) THEN '5+ Prior Summits (Veteran)'
     END
 ORDER BY 
     CASE 
-        WHEN ExperienceCount.PriorSummits = 0 THEN 1
+        WHEN ExperienceCount.PriorSummits = CAST(0 AS INT) THEN 1
         WHEN ExperienceCount.PriorSummits BETWEEN 1 AND 2 THEN 2
         WHEN ExperienceCount.PriorSummits BETWEEN 3 AND 5 THEN 3
-        WHEN ExperienceCount.PriorSummits > 5 THEN 4
+        WHEN ExperienceCount.PriorSummits > CAST(5 AS INT) THEN 4
     END;
 
 -- ═══════════════════════════════════════════════════════════════════════════════

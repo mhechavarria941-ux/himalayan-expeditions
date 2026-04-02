@@ -44,10 +44,10 @@ SELECT
     SUM(CASE WHEN m.death = 'T' THEN 1 ELSE 0 END) AS 'Deaths',
     
     CAST(SUM(CASE WHEN m.msuccess = 'T' THEN 1 ELSE 0 END) AS FLOAT) 
-        / COUNT(*) * 100 AS 'Summit Rate (%)',
+        / NULLIF(COUNT(*), 0) * 100 AS 'Summit Rate (%)',
     
     CAST(SUM(CASE WHEN m.death = 'T' THEN 1 ELSE 0 END) AS FLOAT) 
-        / COUNT(*) * 100 AS 'Mortality Rate (%)',
+        / NULLIF(COUNT(*), 0) * 100 AS 'Mortality Rate (%)',
     
     -- Calculate percentage of total participants
     CAST(COUNT(*) AS FLOAT) 
@@ -93,47 +93,47 @@ SELECT TOP 20
     p.pkname AS 'Peak Name',
     
     SUM(CASE 
-        WHEN (m.sherpa = 'T' OR m.tibetan = 'T' OR m.hired = 'T') THEN 1 
-        ELSE 0 
+        WHEN (m.sherpa = 'T' OR m.tibetan = 'T' OR m.hired = 'T') THEN CAST(1 AS INT) 
+        ELSE CAST(0 AS INT)
     END) AS 'Guides/Sherpas Count',
     
     SUM(CASE 
-        WHEN (m.sherpa = 'T' OR m.tibetan = 'T' OR m.hired = 'T') AND m.death = 'T' THEN 1 
-        ELSE 0 
+        WHEN (m.sherpa = 'T' OR m.tibetan = 'T' OR m.hired = 'T') AND m.death = 'T' THEN CAST(1 AS INT)
+        ELSE CAST(0 AS INT)
     END) AS 'Guide Deaths',
     
     CAST(SUM(CASE 
-        WHEN (m.sherpa = 'T' OR m.tibetan = 'T' OR m.hired = 'T') AND m.death = 'T' THEN 1 
-        ELSE 0 
+        WHEN (m.sherpa = 'T' OR m.tibetan = 'T' OR m.hired = 'T') AND m.death = 'T' THEN CAST(1 AS INT)
+        ELSE CAST(0 AS INT)
     END) AS FLOAT) 
-    / SUM(CASE WHEN (m.sherpa = 'T' OR m.tibetan = 'T' OR m.hired = 'T') THEN 1 ELSE 0 END) * 100
+    / SUM(CASE WHEN (m.sherpa = 'T' OR m.tibetan = 'T' OR m.hired = 'T') THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) * 100
         AS 'Guide Mortality (%)',
     
     SUM(CASE 
         WHEN (m.sherpa = 'F' OR m.sherpa IS NULL) 
             AND (m.tibetan = 'F' OR m.tibetan IS NULL) 
-            AND (m.hired = 'F' OR m.hired IS NULL) THEN 1 
-        ELSE 0 
+            AND (m.hired = 'F' OR m.hired IS NULL) THEN CAST(1 AS INT)
+        ELSE CAST(0 AS INT)
     END) AS 'Paying Climbers Count',
     
     SUM(CASE 
         WHEN (m.sherpa = 'F' OR m.sherpa IS NULL) 
             AND (m.tibetan = 'F' OR m.tibetan IS NULL) 
-            AND (m.hired = 'F' OR m.hired IS NULL) AND m.death = 'T' THEN 1 
-        ELSE 0 
+            AND (m.hired = 'F' OR m.hired IS NULL) AND m.death = 'T' THEN CAST(1 AS INT)
+        ELSE CAST(0 AS INT)
     END) AS 'Paying Climber Deaths',
     
     CAST(SUM(CASE 
         WHEN (m.sherpa = 'F' OR m.sherpa IS NULL) 
             AND (m.tibetan = 'F' OR m.tibetan IS NULL) 
-            AND (m.hired = 'F' OR m.hired IS NULL) AND m.death = 'T' THEN 1 
-        ELSE 0 
+            AND (m.hired = 'F' OR m.hired IS NULL) AND m.death = 'T' THEN CAST(1 AS INT)
+        ELSE CAST(0 AS INT)
     END) AS FLOAT)
     / NULLIF(SUM(CASE 
         WHEN (m.sherpa = 'F' OR m.sherpa IS NULL) 
             AND (m.tibetan = 'F' OR m.tibetan IS NULL) 
-            AND (m.hired = 'F' OR m.hired IS NULL) THEN 1 
-        ELSE 0 
+            AND (m.hired = 'F' OR m.hired IS NULL) THEN CAST(1 AS INT)
+        ELSE CAST(0 AS INT)
     END), 0) * 100 AS 'Climber Mortality (%)'
 
 FROM members m
@@ -176,21 +176,21 @@ SELECT
     
     -- Categorize expeditions by hiring intensity
     CASE 
-        WHEN e.tothired = 0 THEN 'No Hired Staff'
-        WHEN e.tothired BETWEEN 1 AND 10 THEN '1-10 Hired'
-        WHEN e.tothired BETWEEN 11 AND 50 THEN '11-50 Hired'
-        WHEN e.tothired > 50 THEN '50+ Hired'
+        WHEN CAST(e.tothired AS INT) = CAST(0 AS INT) THEN 'No Hired Staff'
+        WHEN CAST(e.tothired AS INT) BETWEEN 1 AND 10 THEN '1-10 Hired'
+        WHEN CAST(e.tothired AS INT) BETWEEN 11 AND 50 THEN '11-50 Hired'
+        WHEN CAST(e.tothired AS INT) > CAST(50 AS INT) THEN '50+ Hired'
     END AS 'Hired Staff Level',
     
     COUNT(DISTINCT e.expid) AS 'Expedition Count',
     
-    SUM(CASE WHEN e.success1 > 0 THEN 1 ELSE 0 END) AS 'Successful Expeditions',
+    SUM(CASE WHEN CAST(e.success1 AS INT) > CAST(0 AS INT) THEN 1 ELSE 0 END) AS 'Successful Expeditions',
     
-    CAST(SUM(CASE WHEN e.success1 > 0 THEN 1 ELSE 0 END) AS FLOAT) 
+    CAST(SUM(CASE WHEN CAST(e.success1 AS INT) > CAST(0 AS INT) THEN 1 ELSE 0 END) AS FLOAT) 
         / COUNT(DISTINCT e.expid) * 100 AS 'Success Rate (%)',
     
-    AVG(e.smtmembers) AS 'Avg Summit Members',
-    AVG(e.mdeaths) AS 'Avg Deaths per Expedition',
+    AVG(CAST(e.smtmembers AS INT)) AS 'Avg Summit Members',
+    AVG(CAST(e.mdeaths AS INT)) AS 'Avg Deaths per Expedition',
     AVG(CAST(e.tothired AS FLOAT)) AS 'Avg Hired Staff'
 
 FROM exped e
@@ -198,31 +198,31 @@ FROM exped e
 GROUP BY 
     p.pkname,
     CASE 
-        WHEN e.tothired = 0 THEN 'No Hired Staff'
-        WHEN e.tothired BETWEEN 1 AND 10 THEN '1-10 Hired'
-        WHEN e.tothired BETWEEN 11 AND 50 THEN '11-50 Hired'
-        WHEN e.tothired > 50 THEN '50+ Hired'
+        WHEN CAST(e.tothired AS INT) = CAST(0 AS INT) THEN 'No Hired Staff'
+        WHEN CAST(e.tothired AS INT) BETWEEN 1 AND 10 THEN '1-10 Hired'
+        WHEN CAST(e.tothired AS INT) BETWEEN 11 AND 50 THEN '11-50 Hired'
+        WHEN CAST(e.tothired AS INT) > CAST(50 AS INT) THEN '50+ Hired'
     END
 HAVING COUNT(DISTINCT e.expid) >= 5 -- Filter: peaks with meaningful data
 ORDER BY p.pkname, 
     CASE 
         WHEN CASE 
-            WHEN e.tothired = 0 THEN 'No Hired Staff'
-            WHEN e.tothired BETWEEN 1 AND 10 THEN '1-10 Hired'
-            WHEN e.tothired BETWEEN 11 AND 50 THEN '11-50 Hired'
-            WHEN e.tothired > 50 THEN '50+ Hired'
+            WHEN CAST(e.tothired AS INT) = CAST(0 AS INT) THEN 'No Hired Staff'
+            WHEN CAST(e.tothired AS INT) BETWEEN 1 AND 10 THEN '1-10 Hired'
+            WHEN CAST(e.tothired AS INT) BETWEEN 11 AND 50 THEN '11-50 Hired'
+            WHEN CAST(e.tothired AS INT) > CAST(50 AS INT) THEN '50+ Hired'
         END = 'No Hired Staff' THEN 1
         WHEN CASE 
-            WHEN e.tothired = 0 THEN 'No Hired Staff'
-            WHEN e.tothired BETWEEN 1 AND 10 THEN '1-10 Hired'
-            WHEN e.tothired BETWEEN 11 AND 50 THEN '11-50 Hired'
-            WHEN e.tothired > 50 THEN '50+ Hired'
+            WHEN CAST(e.tothired AS INT) = CAST(0 AS INT) THEN 'No Hired Staff'
+            WHEN CAST(e.tothired AS INT) BETWEEN 1 AND 10 THEN '1-10 Hired'
+            WHEN CAST(e.tothired AS INT) BETWEEN 11 AND 50 THEN '11-50 Hired'
+            WHEN CAST(e.tothired AS INT) > CAST(50 AS INT) THEN '50+ Hired'
         END = '1-10 Hired' THEN 2
         WHEN CASE 
-            WHEN e.tothired = 0 THEN 'No Hired Staff'
-            WHEN e.tothired BETWEEN 1 AND 10 THEN '1-10 Hired'
-            WHEN e.tothired BETWEEN 11 AND 50 THEN '11-50 Hired'
-            WHEN e.tothired > 50 THEN '50+ Hired'
+            WHEN CAST(e.tothired AS INT) = CAST(0 AS INT) THEN 'No Hired Staff'
+            WHEN CAST(e.tothired AS INT) BETWEEN 1 AND 10 THEN '1-10 Hired'
+            WHEN CAST(e.tothired AS INT) BETWEEN 11 AND 50 THEN '11-50 Hired'
+            WHEN CAST(e.tothired AS INT) > CAST(50 AS INT) THEN '50+ Hired'
         END = '11-50 Hired' THEN 3
         ELSE 4
     END;

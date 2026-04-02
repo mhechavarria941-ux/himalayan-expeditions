@@ -31,11 +31,11 @@ BEGIN
     SELECT 
         @TotalPeaksAnalyzed = COUNT(*),
         @AvgDeathRate = AVG(DeathRate),
-        @HighRiskPeaks = SUM(CASE WHEN DeathRate >= @RiskThreshold THEN 1 ELSE 0 END)
+        @HighRiskPeaks = SUM(CASE WHEN DeathRate >= @RiskThreshold THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END)
     FROM (
         SELECT 
             e.peakid,
-            CAST(SUM(e.mdeaths) AS FLOAT) / COUNT(DISTINCT e.expid) AS DeathRate
+            CAST(SUM(CAST(e.mdeaths AS FLOAT)) AS FLOAT) / COUNT(DISTINCT e.expid) AS DeathRate
         FROM exped e
             INNER JOIN peaks p ON e.peakid = p.peakid
         WHERE p.heightm >= @MinHeight
@@ -70,15 +70,15 @@ BEGIN
             p.heightm AS 'Height (m)',
             COUNT(DISTINCT e.expid) AS 'Expeditions',
             SUM(e.mdeaths) AS 'Deaths',
-            CAST(SUM(e.mdeaths) AS FLOAT) / COUNT(DISTINCT e.expid) AS 'Death Rate',
-            CAST(SUM(CASE WHEN e.success1 > 0 THEN 1 ELSE 0 END) AS FLOAT) 
+            CAST(SUM(CAST(e.mdeaths AS FLOAT)) AS FLOAT) / COUNT(DISTINCT e.expid) AS 'Death Rate',
+            CAST(SUM(CASE WHEN CAST(e.success1 AS INT) > CAST(0 AS INT) THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS FLOAT) 
                 / COUNT(DISTINCT e.expid) * 100 AS 'Success Rate (%)',
             CASE 
-                WHEN CAST(SUM(e.mdeaths) AS FLOAT) / COUNT(DISTINCT e.expid) >= @RiskThreshold 
+                WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) AS FLOAT) / COUNT(DISTINCT e.expid) >= @RiskThreshold 
                     THEN '🔴 EXTREMELY DANGEROUS'
-                WHEN CAST(SUM(e.mdeaths) AS FLOAT) / COUNT(DISTINCT e.expid) >= @RiskThreshold * 0.5
+                WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) AS FLOAT) / COUNT(DISTINCT e.expid) >= @RiskThreshold * 0.5
                     THEN '🟠 HIGH RISK'
-                WHEN CAST(SUM(e.mdeaths) AS FLOAT) / COUNT(DISTINCT e.expid) >= @RiskThreshold * 0.2
+                WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) AS FLOAT) / COUNT(DISTINCT e.expid) >= @RiskThreshold * 0.2
                     THEN '🟡 MODERATE RISK'
                 ELSE '🟢 LOWER RISK'
             END AS 'Risk Level'
@@ -87,7 +87,7 @@ BEGIN
         WHERE p.heightm >= @MinHeight
         GROUP BY p.pkname, p.heightm
         HAVING COUNT(DISTINCT e.expid) >= @MinExpeditions
-        ORDER BY CAST(SUM(e.mdeaths) AS FLOAT) / COUNT(DISTINCT e.expid) DESC;
+        ORDER BY CAST(SUM(CAST(e.mdeaths AS FLOAT)) AS FLOAT) / COUNT(DISTINCT e.expid) DESC;
         
         PRINT '';
         PRINT '└───────────────────────────────────────────────────────────────────────────┘';

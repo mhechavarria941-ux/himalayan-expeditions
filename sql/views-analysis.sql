@@ -36,7 +36,7 @@ AS
         m.msuccess AS MemberSummitAchieved,
         m.death AS Died,
         m.deathtype AS CauseOfDeath,
-        CAST(CASE WHEN m.death = 'T' THEN 1 ELSE 0 END AS FLOAT) * 100 AS MortalityFlag,
+        CAST(CASE WHEN m.death = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END AS FLOAT) * 100 AS MortalityFlag,
         
         -- OXYGEN USAGE
         m.mo2used AS MemberUsedOxygen,
@@ -63,18 +63,18 @@ AS
         p.pstatus AS PeakStatus,
         
         -- CALCULATED METRICS
-        CAST(CASE WHEN e.success1 > 0 THEN 1 ELSE 0 END AS FLOAT) / 
+        CAST(CASE WHEN CAST(e.success1 AS INT) > CAST(0 AS INT) THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END AS FLOAT) / 
             NULLIF(e.totmembers, 0) * 100 AS ExpeditionSuccessRate_Percent,
         
-        CAST(e.mdeaths AS FLOAT) / NULLIF(e.totmembers, 0) * 100 AS ExpeditionMortalityRate_Percent,
+        CAST(CAST(e.mdeaths AS FLOAT) / NULLIF(e.totmembers, 0) * 100) AS ExpeditionMortalityRate_Percent,
         
-        CAST(e.tothired AS FLOAT) / NULLIF(e.totmembers, 0) * 100 AS HiredStaffRatio_Percent,
+        CAST(CAST(e.tothired AS FLOAT) / NULLIF(e.totmembers, 0) * 100) AS HiredStaffRatio_Percent,
         
         -- RISK ASSESSMENT
         CASE 
-            WHEN CAST(e.mdeaths AS FLOAT) / NULLIF(COUNT(*) OVER (PARTITION BY e.expid), 0) >= 0.2 
+            WHEN CAST(CAST(e.mdeaths AS FLOAT) / NULLIF(COUNT(*) OVER (PARTITION BY e.expid), 0)) >= CAST(0.2 AS FLOAT)
                 THEN 'High Risk'
-            WHEN CAST(e.mdeaths AS FLOAT) / NULLIF(COUNT(*) OVER (PARTITION BY e.expid), 0) >= 0.05
+            WHEN CAST(CAST(e.mdeaths AS FLOAT) / NULLIF(COUNT(*) OVER (PARTITION BY e.expid), 0)) >= CAST(0.05 AS FLOAT)
                 THEN 'Moderate Risk'
             ELSE 'Lower Risk'
         END AS ExpeditionRiskLevel,
@@ -113,12 +113,12 @@ AS
         SUM(e.mdeaths) AS TotalDeaths,
         
         -- Calculate rates
-        CAST(SUM(e.smtmembers) AS FLOAT) / NULLIF(SUM(e.totmembers), 0) * 100 AS SummitSuccessRate_Percent,
-        CAST(SUM(e.mdeaths) AS FLOAT) / NULLIF(SUM(e.totmembers), 0) * 100 AS MortalityRate_Percent,
-        CAST(SUM(e.mdeaths) AS FLOAT) / NULLIF(COUNT(DISTINCT e.expid), 0) AS DeathsPerExpedition,
+        CAST(SUM(CAST(e.smtmembers AS FLOAT)) / NULLIF(SUM(e.totmembers), 0) * 100) AS SummitSuccessRate_Percent,
+        CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(SUM(e.totmembers), 0) * 100) AS MortalityRate_Percent,
+        CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(COUNT(DISTINCT e.expid), 0)) AS DeathsPerExpedition,
         
         -- Commercialization metric
-        CAST(SUM(e.tothired) AS FLOAT) / NULLIF(SUM(e.totmembers), 0) * 100 AS HiredStaffPercentage,
+        CAST(SUM(CAST(e.tothired AS FLOAT)) / NULLIF(SUM(e.totmembers), 0) * 100) AS HiredStaffPercentage,
         
         -- Historical span
         MIN(e.year) AS FirstExpeditionYear,
@@ -126,17 +126,17 @@ AS
         COUNT(DISTINCT e.year) AS YearsActive,
         
         -- Member composition
-        SUM(CASE WHEN m.sherpa = 'T' THEN 1 ELSE 0 END) AS SherpaCount,
-        SUM(CASE WHEN m.hired = 'T' THEN 1 ELSE 0 END) AS HiredGuideCount,
+        SUM(CASE WHEN m.sherpa = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS SherpaCount,
+        SUM(CASE WHEN m.hired = 'T' THEN CAST(1 AS INT) ELSE CAST(0 AS INT) END) AS HiredGuideCount,
         COUNT(DISTINCT m.citizen) AS UniqNationalitiesAttempted,
         
         -- Risk classification
         CASE 
-            WHEN CAST(SUM(e.mdeaths) AS FLOAT) / NULLIF(COUNT(DISTINCT e.expid), 0) >= 0.3 
+            WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(COUNT(DISTINCT e.expid), 0)) >= CAST(0.3 AS FLOAT)
                 THEN 'EXTREMELY DANGEROUS'
-            WHEN CAST(SUM(e.mdeaths) AS FLOAT) / NULLIF(COUNT(DISTINCT e.expid), 0) >= 0.15
+            WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(COUNT(DISTINCT e.expid), 0)) >= CAST(0.15 AS FLOAT)
                 THEN 'VERY DANGEROUS'
-            WHEN CAST(SUM(e.mdeaths) AS FLOAT) / NULLIF(COUNT(DISTINCT e.expid), 0) >= 0.05
+            WHEN CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(COUNT(DISTINCT e.expid), 0)) >= CAST(0.05 AS FLOAT)
                 THEN 'DANGEROUS'
             ELSE 'MODERATE'
         END AS DangerClassification

@@ -53,7 +53,7 @@ SELECT
 
 FROM exped e
     INNER JOIN peaks p ON e.peakid = p.peakid
-WHERE p.heightm > 8000 -- Focus on 8000m+ "trophy" peaks
+WHERE p.heightm > CAST(8000 AS INT) -- Focus on 8000m+ "trophy" peaks
 GROUP BY e.year, p.pkname
 ORDER BY p.pkname, e.year;
 
@@ -105,12 +105,12 @@ SELECT
     CAST(AVG(CAST(e.tothired AS FLOAT)) AS DECIMAL(10,2)) AS 'Avg Hired per Exp',
     
     -- Success rate trend
-    CAST(SUM(CASE WHEN e.success1 > 0 THEN 1 ELSE 0 END) AS FLOAT) 
-        / COUNT(DISTINCT e.expid) * 100 AS 'Success Rate (%)',
+    CAST(SUM(CASE WHEN CAST(e.success1 AS INT) > CAST(0 AS INT) THEN 1 ELSE 0 END) AS FLOAT) 
+        / NULLIF(COUNT(DISTINCT e.expid), 0) * 100 AS 'Success Rate (%)',
     
     -- Death rate trend
     CAST(SUM(CAST(e.mdeaths AS FLOAT)) AS DECIMAL(10,2)) AS 'Total Deaths',
-    CAST(SUM(CAST(e.mdeaths AS FLOAT)) / COUNT(DISTINCT e.expid) AS DECIMAL(10,2)) AS 'Deaths per Exp'
+    CAST(SUM(CAST(e.mdeaths AS FLOAT)) / NULLIF(COUNT(DISTINCT e.expid), 0) AS DECIMAL(10,2)) AS 'Deaths per Exp'
 
 FROM exped e
 GROUP BY 
@@ -178,14 +178,14 @@ SELECT
     SUM(e.smtmembers) AS 'Total Summits',
     SUM(e.mdeaths) AS 'Total Deaths',
     
-    CAST(SUM(CASE WHEN e.success1 > 0 THEN 1 ELSE 0 END) AS FLOAT) 
+    CAST(SUM(CASE WHEN CAST(e.success1 AS INT) > CAST(0 AS INT) THEN 1 ELSE 0 END) AS FLOAT) 
         / COUNT(DISTINCT e.expid) * 100 AS 'Success Rate (%)',
     
     CAST(SUM(CAST(e.mdeaths AS FLOAT)) / COUNT(DISTINCT e.expid) AS DECIMAL(10,2)) AS 'Deaths per Expedition'
 
 FROM exped e
 WHERE e.peakid = @EverestPeakID
-    AND e.year >= 1950 -- Since first successful ascent
+    AND e.year >= CAST(1950 AS INT) -- Since first successful ascent
 GROUP BY e.year
 ORDER BY e.year;
 
