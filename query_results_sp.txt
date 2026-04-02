@@ -1,0 +1,5 @@
+Changed database context to 'Final_Project'.
+Msg 8117, Level 16, State 1, Server cap2761cricardomolina, Procedure sp_AnalyzePeakRisk, Line 28
+Operand data type nvarchar is invalid for sum operator.
+Msg 8117, Level 16, State 1, Server cap2761cricardomolina, Procedure sp_AnalyzePeakRisk, Line 62
+Operand data type nvarchar is invalid for sum operator.

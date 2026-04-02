@@ -1,0 +1,9 @@
+Changed database context to 'Final_Project'.
+Msg 207, Level 16, State 1, Server cap2761cricardomolina, Line 213
+Invalid column name 'memberid'.
+Msg 207, Level 16, State 1, Server cap2761cricardomolina, Line 208
+Invalid column name 'memberid'.
+Msg 207, Level 16, State 1, Server cap2761cricardomolina, Line 214
+Invalid column name 'memberid'.
+Msg 8117, Level 16, State 1, Server cap2761cricardomolina, Line 141
+Operand data type nvarchar is invalid for sum operator.

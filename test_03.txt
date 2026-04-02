@@ -1,0 +1,27 @@
+Changed database context to 'Final_Project'.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 119
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 120
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 120
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 121
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 121
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 122
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 122
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 123
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 123
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 124
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 124
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8127, Level 16, State 1, Server cap2761cricardomolina, Line 125
+Column "exped.year" is invalid in the ORDER BY clause because it is not contained in either an aggregate function or the GROUP BY clause.
+Msg 8117, Level 16, State 1, Server cap2761cricardomolina, Line 163
+Operand data type nvarchar is invalid for sum operator.
