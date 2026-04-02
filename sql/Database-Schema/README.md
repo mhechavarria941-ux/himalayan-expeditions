@@ -28,6 +28,34 @@ Contains the main database schema definition for the Himalayan Expeditions proje
 
 ---
 
+### **01-export-all-table-schemas.sql** ⭐ NEW
+Export script to list and view **all actual tables** currently in your Azure database
+- Shows complete list of every table
+- Displays column counts 
+- Generates CREATE TABLE statements
+- Use when you want to see what's really in the database
+
+---
+
+### **02-export-clean-schemas.sql** ⭐ NEW
+Clean, formatted export for **ChartDB visualization**
+- Better formatted CREATE TABLE output
+- Easy to copy-paste into ChartDB
+- Shows table statistics and details
+- Ideal for diagram creation
+
+---
+
+### **HOW-TO-EXPORT-SCHEMAS.md** ⭐ NEW GUIDE
+**Complete instructions** for:
+- How to list all tables in your database
+- How to export full schema definitions
+- How to generate CREATE TABLE statements
+- How to format for ChartDB
+- Multiple methods (SQL Query, Azure Portal, SQL Server Management Studio)
+
+**Start here** if you want to see all your tables!
+
 ## 🔗 Using with ChartDB
 
 **What ChartDB will show**: 8 tables with all relationships
