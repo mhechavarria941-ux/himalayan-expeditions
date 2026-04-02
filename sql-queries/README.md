@@ -1,5 +1,26 @@
 ﻿# Himalayan Expeditions Analysis Queries
 
+## 📂 Repository Structure
+
+```
+sql-queries/
+├── Setup Queries (01-03) ..................... Schema setup & verification
+│   ├── 01-schema-exploration.sql
+│   ├── 02-row-count-analysis.sql
+│   └── 03-data-dictionary-population.sql
+│
+└── Storytelling/ ............................ 4 Analysis Blocks (15 queries)
+    ├── README.md ........................... Quick reference guide ⭐
+    ├── 04-death-zone-demographics.sql ..... 4 queries
+    ├── 05-sherpa-indispensable-CORRECTED.sql ⭐ (4 queries - FULL VERSION)
+    ├── 06-everest-effect.sql .............. 3 queries
+    └── 07-national-cultures.sql ........... 4 queries
+```
+
+**👉 FOR YOUR CLASS PRESENTATION:** See `Storytelling/README.md` for quick reference and presentation flow!
+
+---
+
 ## Production Query Files (ALL TESTED & WORKING)
 
 ### Setup & Verification (01-03)
@@ -7,8 +28,12 @@
 - **02-row-count-analysis.sql**: Count records and data distribution  
 - **03-data-dictionary-population.sql**: Load/verify data dictionary
 
-### Block 1: Death Zone Demographics (04)
-**File**: `04-death-zone-demographics.sql`  
+### 📖 Storytelling Queries (4 Blocks = 15 Queries)
+
+**All files located in `Storytelling/` folder**
+
+#### Block 1: Death Zone Demographics (04)
+**File**: `Storytelling/04-death-zone-demographics.sql`  
 **Queries**: 4 | **Records Analyzed**: 150,000+ | **Focus**: Mortality patterns by age, location, season
 - Query 1: Top 15 deadliest peaks with mortality metrics
 - Query 2: Death causes by peak and season (avalanche, fall, crevasse, etc.)
@@ -17,8 +42,8 @@
 
 **Key Findings**: Annapurna I deadliest (1/7 mortality); mortality ranges 0.3%-1.3% by age
 
-### Block 2: Sherpa Indispensable (05)
-**File**: `05-sherpa-indispensable-CORRECTED.sql` ⭐ **FULL VERSION - RECOMMENDED**  
+#### Block 2: Sherpa Indispensable (05)
+**File**: `Storytelling/05-sherpa-indispensable-CORRECTED.sql` ⭐ **FULL VERSION**  
 **Queries**: 4 | **Records Analyzed**: 150,000+ | **Focus**: Economic and social equity in mountaineering
 - Query 5: Sherpa participation rates and summit achievement with window functions
 - Query 6: Mortality disparity between guides/Sherpas and paying climbers
@@ -27,8 +52,8 @@
 
 **Key Findings**: Sherpas 30-50% of participants, achieve 40%+summits, mortality 2-3x higher
 
-### Block 3: Everest Effect (06)
-**File**: `06-everest-effect.sql`  
+#### Block 3: Everest Effect (06)
+**File**: `Storytelling/06-everest-effect.sql`  
 **Queries**: 3 | **Records Analyzed**: 10,000+ | **Focus**: Commercialization transformation over time
 - Query 9: Team size explosion by era (1960s→2010s)
 - Query 10: Most popular peaks (Everest 2,344 expeditions)
@@ -36,8 +61,8 @@
 
 **Key Findings**: Exponential growth from elite climbing (1-2 expeditions/year pre-1980s) to mass tourism (100+ expeditions/year by 2020s)
 
-### Block 4: National Cultures (07)
-**File**: `07-national-cultures.sql`  
+#### Block 4: National Cultures (07)
+**File**: `Storytelling/07-national-cultures.sql`  
 **Queries**: 4 | **Records Analyzed**: 150,000+ | **Focus**: Cultural and geographic patterns in mountaineering
 - Query 12: National success rankings by competition metrics
 - Query 13: Sherpa origins and guide labor market distribution
