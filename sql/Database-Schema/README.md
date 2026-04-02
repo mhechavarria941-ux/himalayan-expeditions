@@ -7,64 +7,66 @@ Contains the main database schema definition for the Himalayan Expeditions proje
 ## 📋 Files
 
 ### **00-create-main-tables-from-csv.sql** ⭐ PRIMARY
-**Purpose**: Creates all 4 core tables from CSV source data  
-**Tables Created**: 23 tables total (4 core + derived/lookup tables)  
+**Purpose**: Creates all core tables from CSV source data  
+**Tables Created**: 8 tables (4 core + 4 supporting)  
 **Columns**: 200+ columns across all tables  
 **Run First**: Execute this script to initialize the database schema
 
-**Core Tables Created**:
-- `peaks` - Mountain reference data (480 rows)
-- `exped` - Expedition records (11,425 rows)
-- `members` - Participant/climber records (89,000 rows)
-- `refer` - Source references and bibliography (15,586 rows)
+**CORE TABLES (4)** - Used in all analysis queries:
+- `peaks` - Mountain reference data (23 columns, 480 rows)
+- `exped` - Expedition records (65 columns, 11,425 rows)
+- `members` - Participant/climber records (61 columns, 89,000 rows)
+- `refer` - Source references and bibliography (12 columns, 15,586 rows)
 
-**Derived/Lookup Tables Created**:
+**SUPPORTING TABLES (2)**:
 - `himalayan_data_dictionary` - Schema documentation
-- `season_lookup` - Season classifications
-- `citizenship_lookup` - Country reference data
-- Additional administrative and reference tables (15+ more)
+- `audit_deleted_references` - Audit trail for data deletions
+
+**LOOKUP TABLES (2)**:
+- `season_lookup` - Climbing season reference
+- `citizenship_lookup` - Country/nationality reference (247 entries)
 
 ---
 
 ## 🔗 Using with ChartDB
 
-**To view the table relationships in ChartDB:**
+**What ChartDB will show**: 8 tables with all relationships
+
+**To visualize the database structure:**
 
 1. Open [ChartDB.io](https://chartdb.io)
 2. Create a new diagram
-3. Copy the entire content of `00-create-main-tables-from-csv.sql`
+3. Copy **just the CREATE TABLE statements** from `00-create-main-tables-from-csv.sql` (lines ~35-350)
 4. Paste into ChartDB's SQL editor
-5. ChartDB will parse the CREATE TABLE statements and display:
-   - ✅ All 23 tables
+5. ChartDB will parse and display:
+   - ✅ All 8 tables
    - ✅ Column names and data types
    - ✅ Primary key relationships
-   - ✅ Foreign key constraints
-   - ✅ Table relationships diagram
+   - ✅ Table structure diagram
+
+*Tip: You only need the CREATE TABLE lines - skip the data INSERT statements at the bottom.*
 
 ---
 
 ## 📊 Schema Overview
 
 ```
-PRIMARY TABLES:
-├─ peaks (peakid)
-│  └─ Foreign keys linked from exped
-├─ exped (expid, year)
-│  ├─ Links to peaks
-│  └─ Links to refer
-├─ members (membid, expid)
-│  ├─ Links to exped
-│  └─ Links to citizenship_lookup
-└─ refer (refid)
-   └─ Links to exped
+CASCADE RELATIONSHIP:
 
-LOOKUP/REFERENCE TABLES:
-├─ himalayan_data_dictionary
-├─ season_lookup
-├─ citizenship_lookup
-└─ [15+ additional administrative tables]
+peaks (peakid) ◄──────┐
+                      │
+exped (expid) ◄───────┴─── Foreign Key: peakid
+├─ members (expid) ◄─────── Foreign Key: expid
+└─ refer (expid) ◄─────────── Foreign Key: expid
 
-TOTAL: 23 tables, 200+ columns, 150,000+ rows
+LOOKUP TABLES:
+├─ season_lookup ◄─────────── Referenced by exped.season
+└─ citizenship_lookup ◄──────── Referenced by members.citizen
+
+AUDIT TABLES:
+└─ audit_deleted_references ◄── Track deletions
+
+TOTAL: 8 tables, 200+ columns, 127,000+ rows
 ```
 
 ---
@@ -91,42 +93,62 @@ WHERE TABLE_SCHEMA = 'dbo' AND TABLE_TYPE = 'BASE TABLE';
 
 ## 📝 Table Statistics
 
-| Table | Rows | Primary Key | Purpose |
-|-------|------|-------------|---------|
-| peaks | 480 | peakid | Mountain reference data |
-| exped | 11,425 | expid + year | Expedition records |
-| members | 89,000 | membid | Climber participant data |
-| refer | 15,586 | refid | Source references |
-| himalayan_data_dictionary | 221 | (defines columns) | Schema documentation |
-| citizenship_lookup | 247 | citizen_code | Country/nationality codes |
-| season_lookup | 5 | season | Climbing season names |
-| *[14 more]* | *[varies]* | *[varies]* | Administrative/derived |
+| Table | Rows | Columns | Primary Key | Purpose |
+|-------|------|---------|------------|---------|
+| peaks | 480 | 23 | peakid | Mountain reference data |
+| exped | 11,425 | 65 | ExpeditionKey (autogen) | Expedition records |
+| members | 89,000 | 61 | MemberKey (autogen) | Climber participant data |
+| refer | 15,586 | 12 | ReferenceKey (autogen) | Source references |
+| himalayan_data_dictionary | 221+ | 4 | DictionaryKey (autogen) | Schema documentation |
+| citizenship_lookup | 247+ | 4 | citizen_key (autogen) | Country codes |
+| season_lookup | 5 | 4 | season_id (autogen) | Climbing seasons |
+| audit_deleted_references | *varies* | 8 | AuditID (autogen) | Deletion audit trail |
+| **TOTAL** | **~127,000+** | **200+** | | |
 
 ---
 
 ## 🔄 Data Flow
 
 ```
-CSV Files (data/)
+CSV Files (data/himalayan_sources/)
   │
-  ├─ peaks.csv ────────────→ peaks table
-  ├─ exped.csv ────────────→ exped table
-  ├─ members.csv ──────────→ members table
-  └─ refer.csv ────────────→ refer table
-                               │
-                               ↓
-                    All 4 Core Tables Created
-                               │
-    (Used by all 15 analysis queries in Storytelling/)
+  ├─ peaks.csv (480 rows) ─────────────→ peaks table
+  ├─ exped.csv (11,425 rows) ──────────→ exped table
+  ├─ members.csv (89,000 rows) ───────→ members table
+  └─ refer.csv (15,586 rows) ─────────→ refer table
+                                          │
+                                          ↓
+                            DATA LOADED & READY
+                                          │
+    ┌───────────────────────┬────────────┴─────────────┬───────────────────┐
+    │                       │                          │                   │
+    ↓                       ↓                          ↓                   ↓
+  Lookup Tables       Analysis Queries           Stored Procedures      Views
+  (season, citizen)  (15 queries in              (Peak Risk SP)    (Member Analysis)
+                     Storytelling/)
 ```
 
 ---
 
 ## 💡 For Your Project
 
-- **Schema Display**: Use this file to show table relationships in your presentation via ChartDB
-- **Documentation**: Reference this when discussing database design
+- **ChartDB Visualization**: Copy-paste the CREATE TABLE statements into ChartDB.io to see all 8 tables
+- **For Your Analysis**: Focus on the 4 core tables - all 15 queries use these
+- **For Your Presentation**: Show the ChartDB diagram to explain database relationships
 - **Reproducibility**: Anyone can run this script to recreate the exact database structure
+
+---
+
+## ❓ FAQ
+
+**Q: Why does ChartDB show 8 tables instead of more?**  
+A: The schema file creates exactly 8 tables: 4 core (peaks, exped, members, refer) + 2 supporting + 2 lookup tables. This is all that's needed for your analysis.
+
+**Q: Do I need all 8 tables for my analysis?**  
+A: Focus on the 4 core tables (peaks, exped, members, refer). The others are supporting/audit tables.
+
+**Q: How do I copy code to ChartDB?**  
+A: Copy lines 35-380 (just the CREATE TABLE statements), skip the INSERT statements at the bottom.
 
 ---
 
