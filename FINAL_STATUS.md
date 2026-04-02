@@ -51,31 +51,21 @@
 - **Ready for Production**: ✅ YES
 
 ## Testing Instructions
+
+⚠️ **SECURITY**: Use environment variables for credentials, never commit passwords!
+
 ```powershell
+# Set environment variables first (or use Azure Portal connection string)
+$server = $env:AZURE_SQL_SERVER
+$db = $env:AZURE_SQL_DB  
+$user = $env:AZURE_SQL_USER
+$password = $env:AZURE_SQL_PASSWORD
+
 # Test individual blocks
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
-       -d "Final_Project" `
-       -U "admin_ct" `
-       -P "Demo123456" `
-       -i "sql-queries\04-death-zone-demographics.sql"
-       
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
-       -d "Final_Project" `
-       -U "admin_ct" `
-       -P "Demo123456" `
-       -i "sql-queries\05-sherpa-indispensable.sql"
-       
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
-       -d "Final_Project" `
-       -U "admin_ct" `
-       -P "Demo123456" `
-       -i "sql-queries\06-everest-effect.sql"
-       
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
-       -d "Final_Project" `
-       -U "admin_ct" `
-       -P "Demo123456" `
-       -i "sql-queries\07-national-cultures.sql"
+sqlcmd -S $server -d $db -U $user -P $password -i "sql-queries\04-death-zone-demographics.sql"
+sqlcmd -S $server -d $db -U $user -P $password -i "sql-queries\05-sherpa-indispensable.sql"
+sqlcmd -S $server -d $db -U $user -P $password -i "sql-queries\06-everest-effect.sql"
+sqlcmd -S $server -d $db -U $user -P $password -i "sql-queries\07-national-cultures.sql"
 ```
 
 ## Key Fixes Applied

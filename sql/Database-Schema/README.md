@@ -103,7 +103,9 @@ TOTAL: 8 tables, 200+ columns, 127,000+ rows
 
 **Step 1**: Connect to Azure SQL Database
 ```sql
-sqlcmd -S "cap2761cricardomolina.database.windows.net" -d "Final_Project" -U admin_ct -P demo123
+-- Use credentials from Azure Portal (ask instructor)
+-- Never hardcode in repository
+sqlcmd -S <YOUR_SERVER> -d <YOUR_DATABASE> -U <YOUR_USERNAME> -P <YOUR_PASSWORD>
 ```
 
 **Step 2**: Run the schema creation script

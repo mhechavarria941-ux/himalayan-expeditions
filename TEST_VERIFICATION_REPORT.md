@@ -33,10 +33,13 @@
 
 **Ready to Run:**
 ```powershell
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
-       -d "Final_Project" `
-       -U "admin_ct" `
-       -P "Demo123456" `
+# ⚠️ SECURITY: Never commit credentials!
+# Use environment variables or Azure Portal connection string
+
+sqlcmd -S $env:AZURE_SQL_SERVER `
+       -d $env:AZURE_SQL_DB `
+       -U $env:AZURE_SQL_USER `
+       -P $env:AZURE_SQL_PASSWORD `
        -i "sql-queries\04-death-zone-demographics.sql"
 ```
 
@@ -130,19 +133,21 @@ All use proper CAST operations, error handling, and window functions.
 
 ### Test Command Used:
 ```powershell
-sqlcmd -S "cap2761cricardomolina.database.windows.net" `
-       -d "Final_Project" `
-       -U "admin_ct" `
-       -P "Demo123456" `
+# ⚠️ SECURITY: Use environment variables, NOT hardcoded credentials!
+
+sqlcmd -S $env:AZURE_SQL_SERVER `
+       -d $env:AZURE_SQL_DB `
+       -U $env:AZURE_SQL_USER `
+       -P $env:AZURE_SQL_PASSWORD `
        -i "sql-queries\04-death-zone-demographics.sql" `
        -b
 ```
 
 ### Connection Info:
-- ✅ Server: cap2761cricardomolina.database.windows.net (Verified Working)
-- ✅ Database: Final_Project (Verified Working)
-- ✅ Credentials: admin_ct / Demo123456 (Verified Working)
-- ✅ Network: Connected successfully
+- Server: Available via Azure Portal or instructor
+- Database: Final_Project (Verified Working)
+- Credentials: ⚠️ **USE ENVIRONMENT VARIABLES** (Never commit passwords!)
+- Network: Connected successfully
 
 ### Schema Issue Status:
 - ✅ **RESOLVED:** All numeric columns stored as nvarchar 

@@ -31,8 +31,13 @@ Clean export script for ChartDB visualization
 
 ### **Step 1: Connect to Azure SQL Database**
 
+⚠️ **SECURITY WARNING**: Never commit credentials to GitHub!
+
 ```powershell
-sqlcmd -S "cap2761cricardomolina.database.windows.net" -d "Final_Project" -U admin_ct -P demo123
+# Use Azure CLI or environment variables instead
+# Get connection string from Azure Portal (Contact instructor)
+
+sqlcmd -S <YOUR_SERVER> -d <YOUR_DATABASE> -U <YOUR_USERNAME> -P <YOUR_PASSWORD>
 ```
 
 ### **Step 2: Run the Schema Export Query**
@@ -57,9 +62,11 @@ WHERE TABLE_SCHEMA = 'dbo' AND TABLE_TYPE = 'BASE TABLE'
 ORDER BY TABLE_NAME;
 ```
 
-**OPTION C - Full Script (Use one of the .sql files)**
+**OPTION C - Full Script (Use environment variables)**
+
 ```powershell
-sqlcmd -S "cap2761cricardomolina.database.windows.net" -d "Final_Project" -U admin_ct -P demo123 -i Database-Schema/02-export-clean-schemas.sql
+# Never hardcode credentials - use environment variables
+sqlcmd -S $env:AZURE_SQL_SERVER -d $env:AZURE_SQL_DB -U $env:AZURE_SQL_USER -P $env:AZURE_SQL_PASSWORD -i Database-Schema/02-export-clean-schemas.sql
 ```
 
 ---
@@ -107,8 +114,8 @@ SELECT OBJECT_DEFINITION(OBJECT_ID('[TableName]'))  -- Shows exact CREATE TABLE
 ### **Method 2: Export via Azure Portal**
 
 1. Go to [Azure Portal](https://portal.azure.com)
-2. Navigate to your SQL Database `cap2761cricardomolina`
-3. Select `Final_Project` database
+2. Navigate to your SQL Database resource
+3. Select your database
 4. Click **Query Editor**
 5. Run: 
 ```sql
@@ -118,8 +125,8 @@ SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo'
 
 ### **Method 3: Use SQL Server Management Studio (if installed)**
 
-1. Connect to `cap2761cricardomolina.database.windows.net`
-2. Right-click **Final_Project** database → **Tasks** → **Generate Scripts**
+1. Connect to your SQL Server (credentials from Azure Portal)
+2. Right-click your database → **Tasks** → **Generate Scripts**
 3. Select all tables
 4. Choose options:
    - ✅ Script DROP and CREATE
@@ -130,10 +137,10 @@ SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo'
 ### **Method 4: Use Visual Studio**
 
 1. Open SQL Server Object Explorer
-2. Connect to Azure (cap2761cricardomolina)
-3. Right-click tables → **New Query**
-4. Run sp_helptext on each table
-5. Copy results
+2. Connect to Azure SQL (use credentials from Azure Portal)
+3. Browse to your database and tables
+4. Right-click tables → **View Definition**
+5. Copy the CREATE TABLE statements
 
 ---
 
