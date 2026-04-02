@@ -45,7 +45,7 @@ FROM (
     FROM members m
         INNER JOIN exped e ON m.expid = e.expid
         INNER JOIN peaks p ON e.peakid = p.peakid
-    WHERE m.death = 'T'
+    WHERE m.death = 'TRUE'
         AND p.heightm > 8000
     GROUP BY p.pkname, e.season, m.deathtype
 ) dc
@@ -54,7 +54,7 @@ CROSS APPLY (
     FROM members m
         INNER JOIN exped e ON m.expid = e.expid
         INNER JOIN peaks p ON e.peakid = p.peakid
-    WHERE m.death = 'T'
+    WHERE m.death = 'TRUE'
         AND p.heightm > 8000
         AND p.pkname = dc.pkname
         AND e.season = dc.season
@@ -68,19 +68,19 @@ ORDER BY dc.pkname, dc.season, dc.CountPerCause DESC;
 WITH AgeGroups AS (
     SELECT
         CASE 
-            WHEN (YEAR(GETDATE()) - m.yob) < 25 THEN '< 25 years'
-            WHEN (YEAR(GETDATE()) - m.yob) BETWEEN 25 AND 34 THEN '25-34 years'
-            WHEN (YEAR(GETDATE()) - m.yob) BETWEEN 35 AND 44 THEN '35-44 years'
-            WHEN (YEAR(GETDATE()) - m.yob) BETWEEN 45 AND 54 THEN '45-54 years'
-            WHEN (YEAR(GETDATE()) - m.yob) >= 55 THEN '55+ years'
+            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) < 25 THEN '< 25 years'
+            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 25 AND 34 THEN '25-34 years'
+            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 35 AND 44 THEN '35-44 years'
+            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 45 AND 54 THEN '45-54 years'
+            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) >= 55 THEN '55+ years'
             ELSE 'Unknown'
         END AS AgeBracket,
         CASE 
-            WHEN (YEAR(GETDATE()) - m.yob) < 25 THEN 1
-            WHEN (YEAR(GETDATE()) - m.yob) BETWEEN 25 AND 34 THEN 2
-            WHEN (YEAR(GETDATE()) - m.yob) BETWEEN 35 AND 44 THEN 3
-            WHEN (YEAR(GETDATE()) - m.yob) BETWEEN 45 AND 54 THEN 4
-            WHEN (YEAR(GETDATE()) - m.yob) >= 55 THEN 5
+            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) < 25 THEN 1
+            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 25 AND 34 THEN 2
+            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 35 AND 44 THEN 3
+            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 45 AND 54 THEN 4
+            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) >= 55 THEN 5
             ELSE 6
         END AS SortOrder,
         m.death,
@@ -91,11 +91,11 @@ WITH AgeGroups AS (
 SELECT
     AgeBracket,
     COUNT(*) AS TotalClimbers,
-    SUM(CASE WHEN death = 'T' THEN 1 ELSE 0 END) AS Deaths,
-    CAST(SUM(CASE WHEN death = 'T' THEN 1 ELSE 0 END) AS FLOAT) 
+    SUM(CASE WHEN death = 'TRUE' THEN 1 ELSE 0 END) AS Deaths,
+    CAST(SUM(CASE WHEN death = 'TRUE' THEN 1 ELSE 0 END) AS FLOAT) 
         / COUNT(*) * 100 AS MortalityRatePct,
-    SUM(CASE WHEN msuccess = 'T' THEN 1 ELSE 0 END) AS Summits,
-    CAST(SUM(CASE WHEN msuccess = 'T' THEN 1 ELSE 0 END) AS FLOAT) 
+    SUM(CASE WHEN msuccess = 'TRUE' THEN 1 ELSE 0 END) AS Summits,
+    CAST(SUM(CASE WHEN msuccess = 'TRUE' THEN 1 ELSE 0 END) AS FLOAT) 
         / COUNT(*) * 100 AS SummitSuccessRatePct
 FROM AgeGroups
 GROUP BY AgeBracket, SortOrder
