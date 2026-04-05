@@ -127,7 +127,27 @@ himalayan-expeditions/
 
 ---
 
-## 🚀 Quick Start
+## � Data Visualizations
+
+### 1. Deadliest Peaks - Fatality Analysis
+![Deadliest Peaks](visualizations/01-deadliest-peaks.png)
+*Horizontal bar chart showing total deaths by mountain peak*
+
+### 2. Sherpa Mortality Disparity
+![Sherpa Mortality](visualizations/02-sherpa-mortality.png)
+*Grouped bar chart comparing mortality rates: guides vs. clients*
+
+### 3. Everest Commercialization Growth
+![Everest Growth](visualizations/03-everest-growth.png)
+*Scatter/line chart tracking expedition volume over time*
+
+### 4. National Participation - Top Nations
+![Top Nations](visualizations/04-top-nations.png)
+*Treemap visualization showing global participation by country*
+
+---
+
+## �🚀 Quick Start
 
 ### Connect to Database
 See `.env.template` for credentials format. Store credentials in `.env` (not committed):
