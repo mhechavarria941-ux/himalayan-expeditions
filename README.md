@@ -59,7 +59,28 @@ himalayan-expeditions/
 
 ---
 
-## 📊 Key Deliverables
+## �️ Database Schema
+
+**Complete Star Schema with 16 Tables - All Relationships Visualized**
+
+![Himalayan Expeditions Schema](sql/schema-diagram.png)
+
+**Architecture Overview:**
+- **Hub Table**: `exped` (Expeditions) - Central entity connecting all data
+- **Lookup Tables**: `season_lookup`, `citizenship_lookup`
+- **Base Tables**: `peaks`, `members`, `refer`
+- **Decomposition Tables**: 10 tables for expedition details (timeline, routes, outcomes, statistics, style, oxygen, camps, incidents, etc.)
+- **Total Relationships**: 14 Foreign Keys enforcing data integrity
+
+**View the interactive schema**: 
+1. Copy `sql/SCHEMA_VISUALIZATION.sql`
+2. Go to [ChartDB](https://www.chartdb.io)
+3. Click "Import SQL" and paste the script
+4. ChartDB will render the complete ERD
+
+---
+
+## �📊 Key Deliverables
 
 ### ✅ T-SQL Analysis
 - **15 SELECT queries** organized in 4 analytical blocks
