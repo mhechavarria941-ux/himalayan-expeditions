@@ -63,7 +63,7 @@ himalayan-expeditions/
 
 **Complete Star Schema with 16 Tables - All Relationships Visualized**
 
-![Himalayan Expeditions Schema](sql/schema-diagram.png)
+![Himalayan Expeditions Schema](sql/Database-Schema/Schema.png)
 
 **Architecture Overview:**
 - **Hub Table**: `exped` (Expeditions) - Central entity connecting all data
