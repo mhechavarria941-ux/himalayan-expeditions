@@ -204,7 +204,9 @@ AZURE_SQL_PASSWORD=<your_password>
 
 ## 👥 Team
 
-Team members listed in presentation slide.
+- Julian Jimenez
+- Miguel Hechavarria
+- Ricardo Molina Gonzalez
 
 ---
 
