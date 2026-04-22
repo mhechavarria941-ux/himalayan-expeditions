@@ -5,12 +5,15 @@
 -- PURPOSE: Analyze which peaks are most deadly, what kills climbers, and vulnerability patterns
 -- ═══════════════════════════════════════════════════════════════════════════════
 
-USE Final_Project;
+USE HimalayanExpeditions;
 GO
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- QUERY 1: WHICH PEAKS KILL THE MOST?
 -- ─────────────────────────────────────────────────────────────────────────────
+
+USE HimalayanExpeditions;
+GO
 
 SELECT TOP 15
     p.pkname AS PeakName,
@@ -18,10 +21,11 @@ SELECT TOP 15
     COUNT(DISTINCT e.expid) AS TotalExpeditions,
     SUM(CAST(e.mdeaths AS INT)) AS TotalDeaths,
     CAST(SUM(CAST(e.mdeaths AS INT)) AS FLOAT) / COUNT(DISTINCT e.expid) AS DeathsPerExpedition,
-    CAST(COUNT(DISTINCT CASE WHEN CAST(e.success1 AS BIT) = 1 THEN e.expid END) AS FLOAT) 
-        / COUNT(DISTINCT e.expid) * 100 AS SuccessRatePct
+    CAST(
+        COUNT(DISTINCT CASE WHEN CAST(e.success1 AS BIT) = 1 THEN e.expid END) AS FLOAT
+    ) / COUNT(DISTINCT e.expid) * 100 AS SuccessRatePct
 FROM exped e
-    INNER JOIN peaks p ON e.peakid = p.peakid
+INNER JOIN peaks p ON e.peakid = p.peakid
 GROUP BY p.pkname, p.heightm
 HAVING SUM(CAST(e.mdeaths AS INT)) >= 5
 ORDER BY SUM(CAST(e.mdeaths AS INT)) DESC;
@@ -35,7 +39,7 @@ SELECT
     dc.season AS Season,
     dc.deathtype AS CauseOfDeath,
     dc.CountPerCause AS DeathCount,
-    CAST(dc.CountPerCause AS FLOAT) / pt.TotalPerPartition * 100 AS PercentagePct
+    CAST(dc.CountPerCause AS FLOAT) / NULLIF(pt.TotalPerPartition, 0) * 100 AS PercentagePct
 FROM (
     SELECT
         p.pkname,
@@ -43,24 +47,23 @@ FROM (
         m.deathtype,
         COUNT(*) AS CountPerCause
     FROM members m
-        INNER JOIN exped e ON m.expid = e.expid
-        INNER JOIN peaks p ON e.peakid = p.peakid
+    INNER JOIN exped e ON m.expid = e.expid
+    INNER JOIN peaks p ON e.peakid = p.peakid
     WHERE m.death = 'TRUE'
-        AND p.heightm > 8000
+      AND p.heightm > 8000
     GROUP BY p.pkname, e.season, m.deathtype
 ) dc
 CROSS APPLY (
     SELECT COUNT(*) AS TotalPerPartition
     FROM members m
-        INNER JOIN exped e ON m.expid = e.expid
-        INNER JOIN peaks p ON e.peakid = p.peakid
+    INNER JOIN exped e ON m.expid = e.expid
+    INNER JOIN peaks p ON e.peakid = p.peakid
     WHERE m.death = 'TRUE'
-        AND p.heightm > 8000
-        AND p.pkname = dc.pkname
-        AND e.season = dc.season
+      AND p.heightm > 8000
+      AND p.pkname = dc.pkname
+      AND e.season = dc.season
 ) pt
 ORDER BY dc.pkname, dc.season, dc.CountPerCause DESC;
-
 -- ─────────────────────────────────────────────────────────────────────────────
 -- QUERY 3: AGE AND MORTALITY - ARE YOUNGER CLIMBERS MORE VULNERABLE?
 -- ─────────────────────────────────────────────────────────────────────────────
