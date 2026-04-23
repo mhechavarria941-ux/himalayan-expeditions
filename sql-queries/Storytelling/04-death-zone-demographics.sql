@@ -5,8 +5,6 @@
 -- PURPOSE: Analyze which peaks are most deadly, what kills climbers, and vulnerability patterns
 -- ═══════════════════════════════════════════════════════════════════════════════
 
-USE HimalayanExpeditions;
-GO
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- QUERY 1: WHICH PEAKS KILL THE MOST?
