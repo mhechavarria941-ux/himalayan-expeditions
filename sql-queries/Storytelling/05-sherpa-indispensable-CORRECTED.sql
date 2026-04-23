@@ -1,8 +1,7 @@
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- STORYTELLING PHASE: BLOCK 2 - THE SHERPA INDISPENSABLE
 -- ═══════════════════════════════════════════════════════════════════════════════
--- THEME: "The Unsung Heroes" - Examining the role and risk of guides/Sherpas
--- PURPOSE: Reveal economic disparity, risk inequality, and cultural dynamics
+-- Reveal economic disparity, risk inequality, and cultural dynamics
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 USE HimalayanExpeditions;

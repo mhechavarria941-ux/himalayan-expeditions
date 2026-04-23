@@ -1,8 +1,7 @@
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- STORYTELLING PHASE: BLOCK 1 - DEATH ZONE DEMOGRAPHICS
 -- ═══════════════════════════════════════════════════════════════════════════════
--- THEME: "The Human Cost" - Understanding mortality patterns in Himalayan climbing
--- PURPOSE: Analyze which peaks are most deadly, what kills climbers, and vulnerability patterns
+-- Analyze which peaks are most deadly, what kills climbers, and vulnerability patterns
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 

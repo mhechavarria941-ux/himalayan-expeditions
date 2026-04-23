@@ -1,8 +1,7 @@
 ﻿-- ═══════════════════════════════════════════════════════════════════════════════
 -- STORYTELLING PHASE: BLOCK 4 - NATIONAL CLIMBING CULTURES
 -- ═══════════════════════════════════════════════════════════════════════════════
--- THEME: "Different Mountains, Different Peoples" - Cultural climbing patterns
--- PURPOSE: Show how nationality shapes climbing philosophy, style, and outcomes
+-- Show how nationality shapes climbing philosophy, style, and outcomes
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 USE HimalayanExpeditions;

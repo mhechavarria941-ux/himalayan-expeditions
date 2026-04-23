@@ -1,8 +1,7 @@
 ﻿-- ═══════════════════════════════════════════════════════════════════════════════
 -- STORYTELLING PHASE: BLOCK 3 - THE EVEREST EFFECT
 -- ═══════════════════════════════════════════════════════════════════════════════
--- THEME: "Commercialization & Mass Tourism" - How the mountains changed
--- PURPOSE: Show the transformation from elite climbing to mass-market adventure
+-- Show the transformation from elite climbing to mass-market adventure
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 USE HimalayanExpeditions;
