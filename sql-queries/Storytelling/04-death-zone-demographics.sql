@@ -69,24 +69,25 @@ ORDER BY dc.pkname, dc.season, dc.CountPerCause DESC;
 WITH AgeGroups AS (
     SELECT
         CASE 
-            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) < 25 THEN '< 25 years'
-            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 25 AND 34 THEN '25-34 years'
-            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 35 AND 44 THEN '35-44 years'
-            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 45 AND 54 THEN '45-54 years'
-            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) >= 55 THEN '55+ years'
+            WHEN (e.year - CAST(m.yob AS INT)) < 25 THEN '< 25 years'
+            WHEN (e.year - CAST(m.yob AS INT)) BETWEEN 25 AND 34 THEN '25-34 years'
+            WHEN (e.year - CAST(m.yob AS INT)) BETWEEN 35 AND 44 THEN '35-44 years'
+            WHEN (e.year - CAST(m.yob AS INT)) BETWEEN 45 AND 54 THEN '45-54 years'
+            WHEN (e.year - CAST(m.yob AS INT)) >= 55 THEN '55+ years'
             ELSE 'Unknown'
         END AS AgeBracket,
         CASE 
-            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) < 25 THEN 1
-            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 25 AND 34 THEN 2
-            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 35 AND 44 THEN 3
-            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) BETWEEN 45 AND 54 THEN 4
-            WHEN (YEAR(GETDATE()) - CAST(m.yob AS INT)) >= 55 THEN 5
+            WHEN (e.year - CAST(m.yob AS INT)) < 25 THEN 1
+            WHEN (e.year - CAST(m.yob AS INT)) BETWEEN 25 AND 34 THEN 2
+            WHEN (e.year - CAST(m.yob AS INT)) BETWEEN 35 AND 44 THEN 3
+            WHEN (e.year - CAST(m.yob AS INT)) BETWEEN 45 AND 54 THEN 4
+            WHEN (e.year - CAST(m.yob AS INT)) >= 55 THEN 5
             ELSE 6
         END AS SortOrder,
         m.death,
         m.msuccess
     FROM members m
+    INNER JOIN exped e ON m.expid = e.expid
     WHERE m.yob IS NOT NULL
 )
 SELECT
